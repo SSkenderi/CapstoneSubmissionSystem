@@ -1,0 +1,394 @@
+﻿@model CapstoneSubmissionSystem.ViewModels.StudentDocumentsDataViewModel
+@{
+    ViewBag.Title = "Student Documents";
+}
+
+<head>
+
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+</head>
+
+
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/bootstrap.bundle.js"></script>
+@*<script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>*@
+<script src="~/Scripts/jquery-2.2.4.js"></script>
+<script src="~/Scripts/jquery-2.2.4.min.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<body>
+    <nav class="navbar navbar-expand-lg p-3" style="background-color: #d24700; color: #d24700;">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="color:white;" href="#">Capstone Submission System</a>
+            <img class="mb-12" src="~/Images/SSULogo.jpg" alt="" width="100" height="50">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class=" collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto ">
+                    <li class="nav-item">
+                        <a class="nav-link login" style="color:white;" href="@Url.Action("Index", "Login")">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    @* Ketu do behet nje foreach qe kap listen e dokumenteve te perdoruesit  *@
+    @foreach (var doku in Model.Documents)
+    {
+
+        <div>@doku.FileName</div>
+    }
+
+    <style>
+
+        .selected {
+            background-color: #00205b;
+            color: #FFF;
+        }
+
+        .btn_ikone {
+            background-color: #00205b;
+            border: thin;
+            border-radius: 10px;
+            color: white;
+            padding: 12px 16px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn_ikone_disabled {
+            background-color: #00205b;
+            opacity: 0.3;
+            border: thin;
+            border-radius: 10px;
+            color: white;
+            padding: 12px 16px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .inlinineLink {
+            display: inline;
+        }
+
+        .navbar {
+            font-size: medium;
+            font: 400;
+            font-weight: bold;
+            top: -10px;
+        }
+
+        .accordionTitle {
+            font: 400 !important;
+            font-weight: 600 !important;
+        }
+
+        .body {
+            /*padding-top: 0px;*/
+            /*padding-bottom: 20px;*/
+            width: 100%;
+            white-space: nowrap;
+            padding: 0px;
+            /*padding-top: 0px !important;
+            padding-bottom: 0px !important;*/
+        }
+
+        input[type=file]::-webkit-inner-spin-button,
+        input[type=file]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            background-color: black;
+            color: black;
+            margin: 0;
+        }
+
+        /*            .container {
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }*/
+
+        a:hover, a:focus {
+            text-decoration: none;
+            outline: none;
+        }
+
+        #accordion .panel {
+            border: none;
+            border-radius: 3px;
+            box-shadow: none;
+            margin-bottom: 15px;
+        }
+
+        #accordion .panel-heading {
+            padding: 0;
+            border: none;
+            border-radius: 3px;
+        }
+
+
+        #accordion .panel-title a {
+            display: block;
+            padding: 12px 15px;
+            background: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            color: #f81ac1;
+            border: 1px solid #ececec;
+            box-shadow: 0 0 10px rgba(0,0,0,.05);
+            position: relative;
+            transition: all 0.5s ease 0s;
+        }
+
+            #accordion .panel-title a.collapsed {
+                box-shadow: none;
+                color: #676767;
+            }
+
+                #accordion .panel-title a:before,
+                #accordion .panel-title a.collapsed:before {
+                    content: "\f067";
+                    font-family: "Font Awesome 5 Free";
+                    width: 25px;
+                    height: 25px;
+                    line-height: 28px;
+                    font-size: 15px;
+                    font-weight: 900;
+                    color: #f81ac1;
+                    text-align: center;
+                    position: absolute;
+                    top: 8px;
+                    right: 15px;
+                    transform: rotate(135deg);
+                    transition: all 0.3s ease 0s;
+                }
+
+                #accordion .panel-title a.collapsed:before {
+                    color: #676767;
+                    transform: rotate(0);
+                }
+
+            #accordion .panel-title a:after {
+                content: "";
+                width: 1px;
+                height: 100%;
+                background: #ececec;
+                position: absolute;
+                top: 0;
+                right: 55px;
+            }
+
+        #accordion .panel-body {
+            padding: 10px 15px 15px;
+            border: none;
+            font-size: 15px;
+            color: #615f5f;
+            line-height: 27px;
+        }
+
+        .modal-content {
+            position: relative;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            width: 100%;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 0.3rem;
+            outline: 0;
+        }
+
+        .container-fluid {
+            width: 100%;
+            white-space: nowrap;
+            padding: 0px;
+        }
+
+        .container-navbar {
+            width: 100% !important;
+            white-space: nowrap !important;
+        }
+
+        .container {
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .body-content {
+            width: 100%;
+            white-space: nowrap;
+            padding: 0px;
+        }
+
+        input[type=submit] {
+            border: 1px solid #f44c0e;
+            color: #fff;
+            background: tomato;
+            padding: 10px 20px;
+            border-radius: 3px;
+        }
+
+        input[type=submit] {
+            border: 1px solid #d24700;
+            color: #fff;
+            background: tomato;
+            padding: 10px 20px;
+            border-radius: 3px;
+        }
+
+            input[type=submit]:hover {
+                background: #f44c0e;
+            }
+
+        .hidden {
+            display: none;
+        }
+
+        .removeUnderine {
+            text-decoration: none;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        /*tr:nth-child(even) {
+            background-color: #dddddd;
+        }*/
+    </style>
+</body>
+
+
+<script>
+
+
+    $("#usersTable tr").click(function () {
+        $(this).addClass('selected').siblings().removeClass('selected');
+
+        //var value = $(this).onclick.getElementById('userIDRow').value;
+        //alert(value);
+    });
+
+    $(document).ready(function () {
+        $(document).on("click", "#usersTable tbody tr", function () {
+            var useridValue = $(this).closest('tr').attr('id');
+        });
+    });
+
+    function showDiv(select) {
+        if (select.value == 1) {
+            document.getElementById('studentSelectFaculty').style.display = "block";
+        }
+        else {
+            document.getElementById('studentSelectFaculty').style.display = "none";
+        }
+    }
+
+    function hideStudent() {
+        document.getElementById("navStudent").style.visibility = "hidden";
+        document.getElementById("navDocs").style.visibility = "visible";
+    }
+    function hideFaculty() {
+        document.getElementById("navStudent").style.visibility = "visible";
+        document.getElementById("navDocs").style.visibility = "hidden";
+    }
+
+    function afishostudentFolders(subjekti) {
+        subjektGlob = subjekti;
+        var lista = "<li class='breadcrumb-item'><a style='color:#4582ec;cursor:pointer' onclick=afishostudentFoldersLink(this.innerHTML)>" + subjekti + "</a></li>";
+        $("#LinkNav").append(lista);
+
+        var dataToBeSent = "subjekti=" + subjekti;
+
+        $.ajax({
+            type: "Get",
+            url: "/home/StudentFolder",
+            data: dataToBeSent,
+            success: function (response) {
+                document.getElementById("studentfiles").innerHTML = response;
+            }
+        });
+    }
+
+
+
+    function addUserFunc() {
+
+        var e = document.getElementById("userTypeDropdown");
+        var dropdownValue = e.options[e.selectedIndex].text;
+        var userFName = document.getElementById('userFirstName').value;
+        var userLName = document.getElementById('userLasttName').value;
+        var userUsername = document.getElementById('userUsername').value;
+        var userPassword = document.getElementById('userPassword').value;
+
+
+        var userId = 1;//vlera e userit e te fundit.
+        var admin = 0;
+
+        var Fname = "Abel";
+        var Lname = "Stafa";
+        var pass = "12345";
+        var username = "Test5";
+        var facultyId = 1;
+
+
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            async: true,
+            url: '/Home/AddUser',
+            data: {
+                uID: userId,
+                admn: admin,
+                uName: username,
+                fName: Fname,
+                lName: Lname,
+                password: pass,
+                email: email,
+            },
+            success: function (result) {
+                var testresult = "";
+
+            },
+            failure: function (result) {
+                var testresult = "";
+
+            },
+            error: function (result) {
+                var testresult = "";
+
+            },
+        });
+
+    }
+
+
+    function removeError(elemid) {
+        $("#" + elemid).addClass("hidden");
+    }
+</script>
+

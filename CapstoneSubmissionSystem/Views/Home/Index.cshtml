@@ -88,6 +88,7 @@
 
                         <label for="lblUserDetails">User Details</label>
                         <div class="form-row">
+                            @*dgdfgdfg*@
                             <div class="col">
                                 <input type="text" id="userFirstName" class="form-control" placeholder="First Name">
                             </div>
@@ -303,7 +304,16 @@
                                         <div class="col-md-12">
                                             <input type="file" id="document@(docu.TypeID)" oninput="removeError('documentErrormsg@(docu.TypeID)')" />
                                             <button class="float-none" value="Submit" onclick=ValidateInputAndSubmit(@(docu.TypeID))>Submit</button>
-                                            <img class="mb-12 float-end" src="~/Images/red x.png" alt="" width="50" height="50">
+                                            @{ if (Model.Documents.Any(d => d.TypeID == docu.TypeID))
+                                                {
+                                                    <img class="mb-12 float-end" id="uploadStatus@(docu.TypeID)" src="~/Images/green_checkmark.png" alt="" width="50" height="50">
+                                                }
+                                                else
+                                                {
+                                                    <img class="mb-12 float-end" id="uploadStatus@(docu.TypeID)" src="~/Images/red x.png" alt="" width="50" height="50">
+                                                }
+                                            }
+
                                         </div>
                                     </div>
                                 </div>
@@ -635,6 +645,7 @@
 
 <script>
 
+
     $("#usersTable tr").click(function () {
         $(this).addClass('selected').siblings().removeClass('selected');
 
@@ -667,16 +678,13 @@
     }
 
     function afishostudentFolders(subjekti) {
-        subjektGlob = subjekti;
-        var lista = "<li class='breadcrumb-item'><a style='color:#4582ec;cursor:pointer' onclick=afishostudentFoldersLink(this.innerHTML)>" + subjekti + "</a></li>";
-        $("#LinkNav").append(lista);
 
-        var dataToBeSent = "subjekti=" + subjekti;
 
+   
         $.ajax({
             type: "Get",
             url: "/home/StudentFolder",
-            data: dataToBeSent,
+            data: { StudentID: subjekti },
             success: function (response) {
                 document.getElementById("studentfiles").innerHTML = response;
             }
@@ -686,32 +694,45 @@
 
     function ValidateInputAndSubmit(TypeID) {
 
-        var iddok = "#document" + TypeID;
+        
 
+        var currentUserID = @Model.LoggedUser.UserID;
 
-
-        var documentContent = "test";
         var formData = new FormData();
+
+        formData.append("typeID", TypeID);
+        formData.append("userID", currentUserID);
+
         var totalFiles = document.getElementById("document" + TypeID).files.length;
 
         for (var i = 0; i < totalFiles; i++) {
             var file = document.getElementById("document" + TypeID).files[i];
 
             formData.append("FileUpload", file);
+
         }
+       
+
 
         $.ajax({
             type: 'post',
             url: '/Home/Shto',
             data: formData,
+           
             dataType: 'json',
             contentType: false,
             processData: false,
             success: function (response) {
+                if (response == "SUKSES") {
+                    document.getElementById("uploadStatus" + TypeID).src = "/Images/green_checkmark.png";
+                    alert('The file has been uploaded successfully.');
 
+                }
+                else {
+                    alert('Please try again later.');
+                }
 
-
-                alert('The file has been uploaded successfully.');
+               
 
             }
         });
@@ -758,7 +779,15 @@
 
     function addUserFunc() {
 
-        var userId = 10;
+        var e = document.getElementById("userTypeDropdown");
+        var dropdownValue = e.options[e.selectedIndex].text;
+        var userFName = document.getElementById('userFirstName').value;
+        var userLName = document.getElementById('userLasttName').value;
+        var userUsername = document.getElementById('userUsername').value;
+        var userPassword = document.getElementById('userPassword').value;
+
+
+        var userId = 1;//vlera e userit e te fundit.
         var admin = 0;
 
         var Fname = "Abel";

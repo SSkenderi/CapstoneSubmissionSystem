@@ -45,6 +45,7 @@ namespace CapstoneSubmissionSystem.Controllers
 
                 students = DBEntities1.Users.ToList();
                 doctypes = DBEntities1.DocTypes.Where(d=>d.Visible==1).ToList();
+                documents = DBEntities1.Documents.Where(d=>d.OwnerID ==loggedUser.UserID).ToList();
                 homedata.LoggedUser = loggedUser;
                 homedata.Students = students;
                 homedata.DocTypes = doctypes;
@@ -91,6 +92,7 @@ namespace CapstoneSubmissionSystem.Controllers
 
                 homedata.Students = students;
                 homedata.DocTypes = doctypes;
+                homedata.Documents = documents;
 
 
 
@@ -193,35 +195,70 @@ namespace CapstoneSubmissionSystem.Controllers
         {
 
            var files=  Request.Files["FileUpload"];
+           var userIDStr=  Request.Params["userID"].ToString();
+           var typeID =  Request.Params["typeID"].ToString(); 
 
-           byte[] bytes;
-           
-            using (Stream fs = files.InputStream)
+
+            //check if doc exists for this user
+
+             byte[] bytes;
+            int userID = Convert.ToInt32(userIDStr);
+            int DOCtypeID = Convert.ToInt32(typeID);
+
+            //get document for this user if it exists
+            var docexists = DBEntities1.Documents.Where(d => d.TypeID == DOCtypeID && d.OwnerID == userID).FirstOrDefault();
+
+            if(docexists != null && docexists.FileContent !=null )
             {
-                using (BinaryReader br = new BinaryReader(fs))
+
+                using (Stream fs = files.InputStream)
                 {
-                    bytes = br.ReadBytes((Int32)fs.Length);
+                    using (BinaryReader br = new BinaryReader(fs))
+                    {
+                        bytes = br.ReadBytes((Int32)fs.Length);
+                    }
+                   
+                    int index = files.FileName.LastIndexOf(".");
+                    string filenm = files.FileName.ToString();
+
+
+                    docexists.FileName = files.FileName.Substring(0, index);
+
+                    docexists.Extension = files.FileName.Substring(index + 1, 3);
+                    docexists.FileContent = bytes;
+
+                    DBEntities1.SaveChanges();
+
+
                 }
-                Document dok1 = new Document();
-                DateTime rn = DateTime.Now;
-                int index = files.FileName.LastIndexOf(".");
-                string filenm = files.FileName.ToString();
+            }
+            else {
 
 
-                dok1.FileName = files.FileName.Substring(0, index);
-
-                dok1.TypeID = 1;
-                dok1.Extension = files.FileName.Substring(index + 1, 3);
-                dok1.OwnerID = 3;
-                dok1.FileContent = bytes;
-                dok1.Visibility = 1;
-
-                dok1.User = DBEntities1.Users.Where(u => u.UserID == 3).FirstOrDefault();
-                dok1.DocType = DBEntities1.DocTypes.Where(u => u.TypeID == 1).FirstOrDefault();
-                DBEntities1.Documents.Add(dok1);
-                DBEntities1.SaveChanges();
+                using (Stream fs = files.InputStream)
+                {
+                    using (BinaryReader br = new BinaryReader(fs))
+                    {
+                        bytes = br.ReadBytes((Int32)fs.Length);
+                    }
+                    Document dok1 = new Document();
+                    DateTime rn = DateTime.Now;
+                    int index = files.FileName.LastIndexOf(".");
+                    string filenm = files.FileName.ToString();
 
 
+                    dok1.FileName = files.FileName.Substring(0, index);
+
+                    dok1.TypeID = DOCtypeID;
+                    dok1.Extension = files.FileName.Substring(index + 1, 3);
+                    dok1.OwnerID = userID;
+                    dok1.FileContent = bytes;
+                    dok1.Visibility = 0;
+
+                    DBEntities1.Documents.Add(dok1);
+                    DBEntities1.SaveChanges();
+
+                }
             }
             return new JsonResult
             {
@@ -232,6 +269,33 @@ namespace CapstoneSubmissionSystem.Controllers
 
         }
 
+
+        public ActionResult StudentFolder(int StudentID)
+        {
+
+            var student = new User();
+            var students = new List<User>();
+            var documents = new List<Document>();
+
+
+            //MARRIM DOK E USERIT
+
+            student = DBEntities1.Users.Where(s => s.UserID == StudentID).FirstOrDefault();
+
+            documents = DBEntities1.Documents.Where(d => d.OwnerID == StudentID).ToList();
+
+            StudentDocumentsDataViewModel studentDocumentsDataViewModel = new StudentDocumentsDataViewModel();
+            studentDocumentsDataViewModel.Documents = documents;
+            studentDocumentsDataViewModel.StudentUser = student;
+
+
+
+                return View(studentDocumentsDataViewModel);
+           
+
+
+
+        }
 
 
 
