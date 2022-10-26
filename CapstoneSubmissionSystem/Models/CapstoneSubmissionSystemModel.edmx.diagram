@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e0823fd3d8e2422bbd2ab331e3a56d20" Name="Diagram1">
+        <EntityTypeShape EntityType="CapstoneSubmissionSystemDBModel.DocType" Width="1.5" PointX="3" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CapstoneSubmissionSystemDBModel.Document" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CapstoneSubmissionSystemDBModel.Faculty" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="CapstoneSubmissionSystemDBModel.User" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <AssociationConnector Association="CapstoneSubmissionSystemDBModel.FK__Documents__TypeI__32E0915F" ManuallyRouted="false" />
+        <AssociationConnector Association="CapstoneSubmissionSystemDBModel.FK__Documents__Owner__31EC6D26" ManuallyRouted="false" />
+        <AssociationConnector Association="CapstoneSubmissionSystemDBModel.FK__Users__FacultyID__267ABA7A" ManuallyRouted="false" />
+        <AssociationConnector Association="CapstoneSubmissionSystemDBModel.FK__Users__FacultyID__37A5467C" ManuallyRouted="false" />
+        <AssociationConnector Association="CapstoneSubmissionSystemDBModel.FK_Users_Supervisor" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
