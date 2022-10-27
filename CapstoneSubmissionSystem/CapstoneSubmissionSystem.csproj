@@ -188,6 +188,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\file-icon.jpg" />
     <Content Include="Images\green_checkmark.png" />
     <Content Include="Images\folder-icon.png" />
     <Content Include="Images\red x.png" />

@@ -57,27 +57,34 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Add User</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="input-group">
                             <div class="input-group-append">
-                                <label for="exampleFormControlSelect1">User Type</label>
-                                <div>
-                                    <select class="form-control" id="userTypeDropdown" onchange="showDiv(this)">
-                                        <option>Select</option>
-                                        <option value="0" id="facultySelected">Faculty</option>
-                                        <option value="1" id="studentSelected">Student</option>
-                                    </select>
-                                </div>
+                                <label for="exampleFormControlSelect1">Select User Type</label>
+                                @*<div class="form-row">*@
+                                <select class="form-control" id="userTypeDropdown" onchange="showDiv(this)">
+                                    <option>Select...</option>
+                                    <option value="0" id="facultySelected">Faculty</option>
+                                    <option value="1" id="studentSelected">Student</option>
+                                </select>
 
-                                <div style="display:none;" id="studentSelectFaculty">
-                                    <select class="form-control" id="studentFacultySelection">
-                                        <option>Supervisor</option>
-                                    </select>
+                                <div class="row" style="display:none; margin-top:10px;" id="studentSelectFaculty">
+                                    <label for="exampleFormControlSelect1">Select Faculty Member</label>
+                                    <div>
+                                        <select class="form-control" id="studentFacultySelection">
+                                            @foreach (var fOption in Model.Students.Where(fOption => (fOption.ISAdmin == 0 || fOption.ISAdmin == null) && (fOption.SupervisorID == null || fOption.SupervisorID == 0)))
+                                            {
+                                                <option>Select...</option>
+                                                <option value="facultyUser">@(fOption.FirstName) @(fOption.LastName)</option>
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
+                                @*</div>*@
                             </div>
                         </div>
                         @*<div>
@@ -86,7 +93,7 @@
                             </div>*@
 
 
-                        <label for="lblUserDetails">User Details</label>
+                        <label for="lblUserDetails" style="margin-top:10px;">User Details</label>
                         <div class="form-row">
                             @*dgdfgdfg*@
                             <div class="col">
@@ -101,13 +108,19 @@
                                 <input type="text" id="userUsername" class="form-control" placeholder="Username">
                             </div>
                             <div class="col">
+                                <input type="text" id="userEmail" class="form-control" placeholder="Email">
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="margin-top: 10px;">
+                            <div class="col">
                                 <input type="text" id="userPassword" class="form-control" placeholder="Password">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer justify-content-center">
-                        <button type="button" id="hiqDocEmer" class="btn btn-secondary" onclick="hiqDocEmer()" data-dismiss="modal">Mbyll</button>
-                        <button type="button" id="uploadDocument" onclick="uploadF()" data-dismiss="modal" class="btn btn-primary">Ruaj</button>
+                        <button type="button" id="hiqDocEmer" class="btn btn-secondary" onclick="hiqDocEmer()" data-dismiss="modal">Cancel</button>
+                        <button type="button" id="uploadDocument" onclick="uploadF()" data-dismiss="modal" class="btn btn-primary">Add User</button>
                     </div>
                 </div>
             </div>
@@ -636,6 +649,32 @@
             padding: 8px;
         }
 
+        form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-inline .form-control {
+            display: inline-block;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -5px;
+            margin-left: -5px;
+        }
+
+            .form-row > .col {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+
+        label {
+            margin-bottom: 0.5rem;
+        }
+
         /*tr:nth-child(even) {
             background-color: #dddddd;
         }*/
@@ -680,7 +719,7 @@
     function afishostudentFolders(subjekti) {
 
 
-   
+
         $.ajax({
             type: "Get",
             url: "/home/StudentFolder",
@@ -694,7 +733,7 @@
 
     function ValidateInputAndSubmit(TypeID) {
 
-        
+
 
         var currentUserID = @Model.LoggedUser.UserID;
 
@@ -711,14 +750,14 @@
             formData.append("FileUpload", file);
 
         }
-       
+
 
 
         $.ajax({
             type: 'post',
             url: '/Home/Shto',
             data: formData,
-           
+
             dataType: 'json',
             contentType: false,
             processData: false,
@@ -732,7 +771,7 @@
                     alert('Please try again later.');
                 }
 
-               
+
 
             }
         });
@@ -779,15 +818,26 @@
 
     function addUserFunc() {
 
-        var e = document.getElementById("userTypeDropdown");
-        var dropdownValue = e.options[e.selectedIndex].text;
+        
+
+        if (document.getElementById("studentFacultySelection").value == "Faculty") {
+            var userType = 1;
+        }
+
+        else {
+            var userType = 0;
+        }
+        //var e = document.getElementById("userTypeDropdown");
+        //var dropdownValue = e.options[e.selectedIndex].text;
         var userFName = document.getElementById('userFirstName').value;
         var userLName = document.getElementById('userLasttName').value;
         var userUsername = document.getElementById('userUsername').value;
+        var userEmail = document.getElementById('userEmail').value;
         var userPassword = document.getElementById('userPassword').value;
 
 
-        var userId = 1;//vlera e userit e te fundit.
+        /*var userId = 4;*///vlera e userit e te fundit.
+        var supvID=4
         var admin = 0;
 
         var Fname = "Abel";
@@ -805,14 +855,15 @@
             data: {
                 uID: userId,
                 admn: admin,
-                uName: username,
-                fName: Fname,
-                lName: Lname,
-                password: pass,
-                email: email,
+                uName: userUsername,
+                fName: userFName,
+                lName: userLName,
+                email: userEmail,
+                password: userPassword,
+                facID: facultyId,
             },
             success: function (result) {
-                var testresult = "";
+                alert('User added.');
 
             },
             failure: function (result) {

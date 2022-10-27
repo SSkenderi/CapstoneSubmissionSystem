@@ -43,11 +43,46 @@
     </nav>
 
     @* Ketu do behet nje foreach qe kap listen e dokumenteve te perdoruesit  *@
-    @foreach (var doku in Model.Documents)
-    {
+    @*@foreach (var doku in Model.Documents)
+        {
 
-        <div>@doku.FileName</div>
-    }
+            <div>@doku.FileName</div>
+        }*@
+
+    <div>
+        <div class="container">
+
+            <div class="row">
+
+                <div class="row col-md-12">
+                    <label class="text-start">Please click a file to preview additional information!</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="row col-md-12">
+                    @{
+                        int index = 0;
+                        foreach (var doku in Model.Documents)
+                        {
+                            if (index % 3 == 0)
+                            {
+                                <br />
+                                <br />
+                            }
+                            <div class="col-md-3">
+                                <img onclick="afishostudentFolders(@doku.OwnerID)" style="width:75px; height:85px;" src="~/Images/file-icon.jpg" />
+                                <br /><label> @doku.FileName .  @doku.Extension</label>
+                            </div>
+                            index++;
+                        }
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <style>
 
