@@ -15,7 +15,11 @@ namespace CapstoneSubmissionSystem.Controllers
         public ActionResult Index()
         {
 
-           
+            if (Session["UserID"]!=null)
+            {
+
+                return RedirectToAction("Index", "Home");
+            }
 
             return View();
         }

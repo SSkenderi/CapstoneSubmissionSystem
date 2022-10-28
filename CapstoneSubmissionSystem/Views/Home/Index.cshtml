@@ -79,7 +79,7 @@
                                             @foreach (var fOption in Model.Students.Where(fOption => (fOption.ISAdmin == 0 || fOption.ISAdmin == null) && (fOption.SupervisorID == null || fOption.SupervisorID == 0)))
                                             {
                                                 <option>Select...</option>
-                                                <option value="facultyUser">@(fOption.FirstName) @(fOption.LastName)</option>
+                                                <option id="facultyPicked" value="@(fOption.UserID)">@(fOption.FirstName) @(fOption.LastName)</option>
                                             }
                                         </select>
                                     </div>
@@ -120,7 +120,7 @@
                     </div>
                     <div class="modal-footer justify-content-center">
                         <button type="button" id="hiqDocEmer" class="btn btn-secondary" onclick="hiqDocEmer()" data-dismiss="modal">Cancel</button>
-                        <button type="button" id="uploadDocument" onclick="uploadF()" data-dismiss="modal" class="btn btn-primary">Add User</button>
+                        <button type="button" id="uploadDocument" onclick="addUserFunc()" data-dismiss="modal" class="btn btn-primary">Add User</button>
                     </div>
                 </div>
             </div>
@@ -193,8 +193,8 @@
                 <div class="col-md-12">
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="navStudentTab" onclick="hideFaculty()" data-toggle="tab" href="#navStudent" role="tab" aria-controls="nav-home" aria-selected="true">Student</a>
-                            <a class="nav-item nav-link" id="navFacultyTab" data-toggle="tab" onclick="hideStudent()" href="#navFaculty" role="tab" aria-controls="nav-profile" aria-selected="false">Faculty</a>
+                            <a class="nav-item nav-link active" id="navStudentTab" onclick="hideFaculty()" data-toggle="tab" href="#navStudent" role="tab" aria-controls="nav-home" aria-selected="true">User Managment</a>
+                            <a class="nav-item nav-link" id="navFacultyTab" data-toggle="tab" onclick="hideStudent()" href="#navFaculty" role="tab" aria-controls="nav-profile" aria-selected="false">Document Types Managment</a>
                         </div>
                     </nav>
                     <div class="tab-content" id="nav-tabContent">
@@ -355,43 +355,49 @@
                         <label class="text-start">Welcome, @Model.LoggedUser.FirstName @Model.LoggedUser.LastName</label>
                     </div>
                 </div>
-                <div class="row">
+                <div id="StudentFolders">
+                    <div class="row">
 
-                    <div class="row col-md-12">
-                        <label class="text-start">Please click the folder to open student's data!</label>
+                        <div class="row col-md-12">
+                            <label class="text-start">Please click the folder to open student's data!</label>
+                        </div>
                     </div>
-                </div>
 
 
-                @* ketu do te krijosh design per nje tabele ku do te shfaqet DISA imazhe folderi
-                    dhe poshte folderit perkates emri i studentit)
+                    @* ketu do te krijosh design per nje tabele ku do te shfaqet DISA imazhe folderi
+                        dhe poshte folderit perkates emri i studentit)
 
-                    edhe ektu bej nje si titull welcome xx . Here you can view your student's files
+                        edhe ektu bej nje si titull welcome xx . Here you can view your student's files
 
-                *@
+                    *@
 
-                <div class="row">
-                    <div class="row col-md-12">
-                        @{
-                            int index = 0;
-                            foreach (var st in Model.Students)
-                            {
-                                if (index % 3 == 0)
+                    <div class="row">
+                        <div class="row col-md-12">
+                            @{
+                                int index = 0;
+                                foreach (var st in Model.Students)
                                 {
-                                    <br />
-                                    <br />
+                                    if (index % 3 == 0)
+                                    {
+                                        <br />
+                                        <br />
+                                    }
+                                    <div class="col-md-3">
+                                        <img onclick="afishostudentFolders(@st.UserID)" style="width:75px; height:85px;" src="~/Images/folder-icon.png" />
+                                        <br /><label> @st.FirstName @st.LastName</label>
+                                    </div>
+                                    index++;
                                 }
-                                <div class="col-md-3">
-                                    <img onclick="afishostudentFolders(@st.UserID)" style="width:75px; height:85px;" src="~/Images/folder-icon.png" />
-                                    <br /><label> @st.FirstName @st.LastName</label>
-                                </div>
-                                index++;
                             }
-                        }
+
+                        </div>
 
                     </div>
+                </div>
+                <div id="StudentFiles">
 
                 </div>
+
             </div>
         </div>
         <!--<div class="col">
@@ -717,16 +723,43 @@
     }
 
     function afishostudentFolders(subjekti) {
-
-
-
+        //27TETOR
+        //TE VENDOSET NJE SHIGJETE NE VEND TE FJALES BACK
+        var html = "<div onclick='GOBACK();'>back</div>";
         $.ajax({
-            type: "Get",
+            type: "POST",
+            dataType: 'json',
+
             url: "/home/StudentFolder",
+            async: false,
             data: { StudentID: subjekti },
             success: function (response) {
-                document.getElementById("studentfiles").innerHTML = response;
+                if (response.success == "success") {
+                            //27TETOR
+
+                    //TE HTML QE GJENEROHET KETU DUHET TE SHTOHEN STILIZIMET PER TITUJT DHE DOKUMENTAT QE SHFAQEN
+                    html += " <h3>DOCUMENTS UPLOADED BY " + response.studentname + "</h3> <br>";
+                    for (i = 0; i < response.docnames.length; i++) {
+
+                        html += "<div>" + response.doctypes[i] + ": </div><div id=" + response.docids[i] + ">" + response.docnames[i] + "</div> <div><button onclick='PreviewDoc(" + response.docids[i]+")'>PREVIEW</button></div><br>";
+
+                    }
+
+
+                }
+                document.getElementById("StudentFiles").innerHTML = html;
+                document.getElementById("StudentFiles").style.display = "block";
+
+                document.getElementById("StudentFolders").style.display = "none";
+
+                var test = 2;
+                // document.getElementById("studentfiles").innerHTML = response;
+            },
+            failure: function (result) {
+                var test = 2;
             }
+            , error: function (result) {
+                var test = 3;}
         });
     }
 
@@ -751,8 +784,6 @@
 
         }
 
-
-
         $.ajax({
             type: 'post',
             url: '/Home/Shto',
@@ -770,9 +801,6 @@
                 else {
                     alert('Please try again later.');
                 }
-
-
-
             }
         });
         //ketu duhet te besh marrjen e base 64 nga inputi qe ti kalohet backendit
@@ -818,13 +846,16 @@
 
     function addUserFunc() {
 
-        
+        /*//$("#myname").find(':selected').attr('isred');*/
 
-        if (document.getElementById("studentFacultySelection").value == "Faculty") {
+
+
+
+        if (document.getElementById("facultySelected").value) {
             var userType = 1;
         }
 
-        else {
+        else if (document.getElementById("studentSelected").value) {
             var userType = 0;
         }
         //var e = document.getElementById("userTypeDropdown");
@@ -834,17 +865,17 @@
         var userUsername = document.getElementById('userUsername').value;
         var userEmail = document.getElementById('userEmail').value;
         var userPassword = document.getElementById('userPassword').value;
-
+        var pickedSupervisorID = document.getElementById('facultyPicked').value;
 
         /*var userId = 4;*///vlera e userit e te fundit.
         var supvID=4
         var admin = 0;
 
-        var Fname = "Abel";
-        var Lname = "Stafa";
-        var pass = "12345";
-        var username = "Test5";
-        var facultyId = 1;
+        //var Fname = "Abel";
+        //var Lname = "Stafa";
+        //var pass = "12345";
+        //var username = "Test5";
+        //var facultyId = 1;
 
 
         $.ajax({
@@ -853,25 +884,25 @@
             async: true,
             url: '/Home/AddUser',
             data: {
-                uID: userId,
+                uType: userType,
                 admn: admin,
                 uName: userUsername,
                 fName: userFName,
                 lName: userLName,
                 email: userEmail,
                 password: userPassword,
-                facID: facultyId,
+                supID: pickedSupervisorID,
             },
             success: function (result) {
                 alert('User added.');
 
             },
             failure: function (result) {
-                var testresult = "";
 
+                alert('User add failed.');
             },
             error: function (result) {
-                var testresult = "";
+                alert('Error.');
 
             },
         });
@@ -881,6 +912,26 @@
 
     function removeError(elemid) {
         $("#" + elemid).addClass("hidden");
+    }
+    function GOBACK(elemid) {
+
+        document.getElementById("StudentFiles").style.display = "none";
+
+        document.getElementById("StudentFolders").style.display = "block";
+    }
+
+
+    function PreviewDoc(elemid) {
+
+                //27TETOR
+
+        //KETU DO THERRITET ME AJAX NJE METODE NE CONTROLLER QE MERR FILECONTENT E DOKUMENTIT
+        //PASI TE MERRET FILECONTENT NGA BACKEND PER ELEMID E MESIPERM DO TE BEHET PREVIEW
+        //PER PREVIEW TE SHIHEN SHEMBUJ NE INTERNET DHE NQS SE BEN DOT SOT DO E SHOHIM PERSERI NESER
+
+
+
+        alert("preview doc here");
     }
 </script>
 

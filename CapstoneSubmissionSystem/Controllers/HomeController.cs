@@ -135,11 +135,33 @@ namespace CapstoneSubmissionSystem.Controllers
             return View();
         }
 
-        public ActionResult AddUser(int uID, string uName, string fName, string lName, string password, string email)
+        [HttpPost]
+        public ActionResult AddUser(int uType, int admn, string fName, string lName, string password, string email, string uName, int pickedSupervisorID)
         {
-            ViewBag.Message = "Your application description page.";
+            User addUser = new User();
 
-            return View();
+
+            //addUser.FileName = files.FileName.Substring(0, index);
+
+            addUser.FacultyID = uType;
+            addUser.FirstName = fName;
+            addUser.LastName = lName;
+            addUser.Username = uName;
+            addUser.ISAdmin = (byte)admn;
+            addUser.Password = password;
+            addUser.Email = email;
+            addUser.FacultyID = pickedSupervisorID;
+            
+
+            DBEntities1.Users.Add(addUser);
+            DBEntities1.SaveChanges();
+
+            return new JsonResult
+            {
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue,
+                Data = "SUKSES"
+            };
         }
 
         public ActionResult DeleteUser(int userID)
@@ -163,32 +185,32 @@ namespace CapstoneSubmissionSystem.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult> SubmitDok(string typeID, string docContent, string docName)
-        {
-            //SKERDIII 21.10
-            //ketu do behet inserti ne db i dok
+        //[HttpPost]
+        //public async Task<ActionResult> SubmitDok(string typeID, string docContent, string docName)
+        //{
+        //    //SKERDIII 21.10
+        //    //ketu do behet inserti ne db i dok
 
-            //KAP ID E USERIT TE LOGUAR PER TE LIDHUR DOK ME USERIN 
-            // TE DHENAT E TJERA TE VIJNE SI PARAMETER NGA AJAXI
-            //NQS TE DUHEN AKOMA ME SH TE DHENA SHTOJI TE AJO PJESA DATA: NE AJAX POR EMRI ATJE DUHET I NJEJTE ME PARAMETRIN KETU
+        //    //KAP ID E USERIT TE LOGUAR PER TE LIDHUR DOK ME USERIN 
+        //    // TE DHENAT E TJERA TE VIJNE SI PARAMETER NGA AJAXI
+        //    //NQS TE DUHEN AKOMA ME SH TE DHENA SHTOJI TE AJO PJESA DATA: NE AJAX POR EMRI ATJE DUHET I NJEJTE ME PARAMETRIN KETU
 
-            //Fillimisht kerkon per kete user dhe per kete typeid nqs ka nje dok nuk ben insert por update ate qe eshte
+        //    //Fillimisht kerkon per kete user dhe per kete typeid nqs ka nje dok nuk ben insert por update ate qe eshte
 
-            //Nese nuk ka nje dok  me kete type id per kete user e ben insert
+        //    //Nese nuk ka nje dok  me kete type id per kete user e ben insert
 
-            //NESE BEHET SHTIMI/UPDATE ME SUKSES KTHEN SUKSES
-            //NE TE KUNDERT BEN NJE RETURN TJETER FALSE OSE SI TE DUASH.
+        //    //NESE BEHET SHTIMI/UPDATE ME SUKSES KTHEN SUKSES
+        //    //NE TE KUNDERT BEN NJE RETURN TJETER FALSE OSE SI TE DUASH.
 
 
 
-            return new JsonResult
-            {
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                MaxJsonLength = int.MaxValue,
-                Data = "SUKSES"
-            };
-        }
+        //    return new JsonResult
+        //    {
+        //        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+        //        MaxJsonLength = int.MaxValue,
+        //        Data = "SUKSES"
+        //    };
+        //}
 
         [HttpPost]
         public ActionResult Shto()
@@ -270,6 +292,7 @@ namespace CapstoneSubmissionSystem.Controllers
         }
 
 
+        [HttpPost]
         public ActionResult StudentFolder(int StudentID)
         {
 
@@ -287,11 +310,22 @@ namespace CapstoneSubmissionSystem.Controllers
             StudentDocumentsDataViewModel studentDocumentsDataViewModel = new StudentDocumentsDataViewModel();
             studentDocumentsDataViewModel.Documents = documents;
             studentDocumentsDataViewModel.StudentUser = student;
+            string stname = student.FirstName + " " + student.LastName; 
+            return new JsonResult
+            {
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue,
+                Data = new {
+                    docnames = studentDocumentsDataViewModel.Documents.Select(d => d.FileName).ToArray(),
+                    docids = studentDocumentsDataViewModel.Documents.Select(d => d.DocumentID).ToArray(),
+                    doctypes = studentDocumentsDataViewModel.Documents.Select(d => d.DocType.TypeName).ToArray(),
+                    studentname = stname,
+                    success = "success"
+                }
+            };
 
 
 
-                return View(studentDocumentsDataViewModel);
-           
 
 
 
