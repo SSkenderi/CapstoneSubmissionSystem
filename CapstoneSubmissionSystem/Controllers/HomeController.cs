@@ -164,6 +164,36 @@ namespace CapstoneSubmissionSystem.Controllers
             };
         }
 
+
+
+        [HttpPost]
+        public ActionResult AddFileUpload(int fUploadID, string fileUploadName)
+        {
+            DocType addFU = new DocType();
+
+
+            //addUser.FileName = files.FileName.Substring(0, index);
+
+            addFU.TypeID= fUploadID;
+            addFU.TypeName = fileUploadName;
+           
+
+
+            DBEntities1.DocTypes.Add(addFU);
+            DBEntities1.SaveChanges();
+
+            return new JsonResult
+            {
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue,
+                Data = "SUKSES"
+            };
+        }
+
+
+
+
+
         public ActionResult DeleteUser(int userID)
         {
             var deletedUser = DBEntities1.Users.Where(u => u.UserID == userID /*per tu pare prape*/).FirstOrDefault();

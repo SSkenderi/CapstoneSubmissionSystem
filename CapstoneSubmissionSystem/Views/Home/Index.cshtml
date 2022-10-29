@@ -73,7 +73,7 @@
                                 </select>
 
                                 <div class="row" style="display:none; margin-top:10px;" id="studentSelectFaculty">
-                                    <label for="exampleFormControlSelect1">Select Faculty Member</label>
+                                    <label for="exampleFormControlSelect1">Select Faculty Supervisor</label>
                                     <div>
                                         <select class="form-control" id="studentFacultySelection">
                                             @foreach (var fOption in Model.Students.Where(fOption => (fOption.ISAdmin == 0 || fOption.ISAdmin == null) && (fOption.SupervisorID == null || fOption.SupervisorID == 0)))
@@ -127,6 +127,48 @@
         </div>
         <!--Add User popup-->
 
+
+        <!--Add Fileupload popup-->
+        <div class="modal fade" id="modalAddUser" tabindex="-1" role="dialog" aria-labelledby="modalUploadTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Add Required File Upload</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                       
+                        @*<div>
+                                <label for="exampleFormControlInput1">Fusha e Indeksimit</label>
+                                <input type="text" class="form-control" id="indexUpload" placeholder="Fusha e Indeksimit">
+                            </div>*@
+
+
+                        <label for="lblUserDetails" style="margin-top:10px;">User Details</label>
+                        <div class="form-row">
+                            @*dgdfgdfg*@
+                            <div class="col">
+                                <input type="text" id="userFirstName" class="form-control" placeholder="Required Document Name">
+                            </div>
+                            @*<div class="col">
+                                <input type="text" id="userLasttName" class="form-control" placeholder="Last Name">
+                            </div>*@
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" id="hiqDocEmer" class="btn btn-secondary" onclick="hiqDocEmer()" data-dismiss="modal">Cancel</button>
+                        <button type="button" id="uploadDocument" onclick="addFileUploadFunc()" data-dismiss="modal" class="btn btn-primary">Add File Upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Add Fileupload popup-->
+
+
+
+
         <!--Delete User popup-->
         <div class="modal fade" id="modalDeleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -179,14 +221,14 @@
             <label class="text-start">Welcome, Administrator</label>
         </div>
         //duhet rregulluar design i ketyre tre diveve
-        <div class="row border-bottom border-2 rounded">
-            <div class="col-md-6 border border-bottom-0 border-2 rounded">
-                <h4 class="text-center"><a href="" class="removeUnderine">Manage Document Types</a></h4>
-            </div>
-            <div class="col-md-6 border border-bottom-0 border-2 rounded">
-                <h4 class="text-center"><a href="" class="removeUnderine">Manage Users</a></h4>
-            </div>
-        </div>
+        @*<div class="row border-bottom border-2 rounded">
+                <div class="col-md-6 border border-bottom-0 border-2 rounded">
+                    <h4 class="text-center"><a href="" class="removeUnderine">Manage Document Types</a></h4>
+                </div>
+                <div class="col-md-6 border border-bottom-0 border-2 rounded">
+                    <h4 class="text-center"><a href="" class="removeUnderine">Manage Users</a></h4>
+                </div>
+            </div>*@
 
         <div class="container">
             <div class="row">
@@ -725,7 +767,7 @@
     function afishostudentFolders(subjekti) {
         //27TETOR
         //TE VENDOSET NJE SHIGJETE NE VEND TE FJALES BACK
-        var html = "<div onclick='GOBACK();'>back</div>";
+        var html = "<div onclick='GOBACK();'> <h3> < </h3> </div>";
         $.ajax({
             type: "POST",
             dataType: 'json',
@@ -741,7 +783,7 @@
                     html += " <h3>DOCUMENTS UPLOADED BY " + response.studentname + "</h3> <br>";
                     for (i = 0; i < response.docnames.length; i++) {
 
-                        html += "<div>" + response.doctypes[i] + ": </div><div id=" + response.docids[i] + ">" + response.docnames[i] + "</div> <div><button onclick='PreviewDoc(" + response.docids[i]+")'>PREVIEW</button></div><br>";
+                        html += "<div>" + response.doctypes[i] + ": </div><div id=" + response.docids[i] + ">" + response.docnames[i] + "</div> <div class'inlinineLink'><button onclick='PreviewDoc(" + response.docids[i]+")'>PREVIEW</button></div><br>";
 
                     }
 
@@ -908,6 +950,54 @@
         });
 
     }
+
+
+
+    function addFileUploadFunc() {
+
+        /*//$("#myname").find(':selected').attr('isred');*/
+
+        var fileUploadID = document.getElementById('userFirstName').value;
+        var fileUploadName = document.getElementById('userLasttName').value;
+        
+
+
+
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            async: true,
+            url: '/Home/AddUser',
+            data: {
+                uType: userType,
+                admn: admin,
+                uName: userUsername,
+                fName: userFName,
+                lName: userLName,
+                email: userEmail,
+                password: userPassword,
+                supID: pickedSupervisorID,
+            },
+            success: function (result) {
+                alert('User added.');
+
+            },
+            failure: function (result) {
+
+                alert('User add failed.');
+            },
+            error: function (result) {
+                alert('Error.');
+
+            },
+        });
+
+    }
+
+
+
+
+
 
 
     function removeError(elemid) {
