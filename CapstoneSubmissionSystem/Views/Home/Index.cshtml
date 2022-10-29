@@ -951,8 +951,6 @@
 
     }
 
-
-
     function addFileUploadFunc() {
 
         /*//$("#myname").find(':selected').attr('isred');*/
@@ -967,7 +965,7 @@
             type: "POST",
             dataType: 'json',
             async: true,
-            url: '/Home/AddUser',
+            url: '/Home/SAMPLE',
             data: {
                 uType: userType,
                 admn: admin,
@@ -994,10 +992,38 @@
 
     }
 
+    function addFileUploadFunc() {
+
+        /*//$("#myname").find(':selected').attr('isred');*/
+
+        //Vlera e id kapur me klick
 
 
 
 
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            async: true,
+            url: '/Home/SAMPLE',
+            data: {
+                // Vlera e ID kapur me click
+            },
+            success: function (result) {
+                alert('User added.');
+
+            },
+            failure: function (result) {
+
+                alert('User add failed.');
+            },
+            error: function (result) {
+                alert('Error.');
+
+            },
+        });
+
+    }
 
 
     function removeError(elemid) {

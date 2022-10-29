@@ -167,14 +167,14 @@ namespace CapstoneSubmissionSystem.Controllers
 
 
         [HttpPost]
-        public ActionResult AddFileUpload(int fUploadID, string fileUploadName)
+        public ActionResult AddFileUpload(string fileUploadName)
         {
             DocType addFU = new DocType();
 
 
             //addUser.FileName = files.FileName.Substring(0, index);
 
-            addFU.TypeID= fUploadID;
+            //addFU.TypeID= fUploadID;
             addFU.TypeName = fileUploadName;
            
 
@@ -241,6 +241,30 @@ namespace CapstoneSubmissionSystem.Controllers
         //        Data = "SUKSES"
         //    };
         //}
+
+
+        [HttpPost]
+        public ActionResult UploadFile(HttpPostedFileBase file)
+        {
+            try
+            {
+                if (file.ContentLength > 0)
+                {
+                    string _FileName = Path.GetFileName(file.FileName);
+                    string _path = Path.Combine(Server.MapPath("~/FileRepo"), _FileName);
+                    file.SaveAs(_path);
+                }
+                ViewBag.Message = "File Uploaded Successfully.";
+                return View();
+            }
+            catch
+            {
+                ViewBag.Message = "File upload failed.";
+                return View();
+            }
+        }
+
+
 
         [HttpPost]
         public ActionResult Shto()
