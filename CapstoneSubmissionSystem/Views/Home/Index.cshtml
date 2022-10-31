@@ -269,7 +269,7 @@
                                     @{
                                         foreach (var row in Model.Students)
                                         {
-                                            <tr @*id="@(row.UserID)"*@>
+                                            <tr onclick="reply_click(userIDRow)" @* id="@(row.UserID)"*@>
                                                 <td style="display:none;" id ="userIDRow">@(row.UserID)</td>
                                                 <td>@(row.Username)</td>
                                                 <td>@(row.FirstName)</td>
@@ -782,6 +782,13 @@
     //    document.getElementById(id).querySelector('.dropdown-content').classList.toggle("show");
     //}
 
+    //alert(document.getElementById("usersTable").childNodes[1].childElementCount);
+
+    //function reply_click(userIDRow) {
+    //    userIDRow = getElementById(u)
+
+    //    alert(document.getElementById("userIDRow").value);
+    //}
 
 
 
