@@ -269,8 +269,8 @@
                                     @{
                                         foreach (var row in Model.Students)
                                         {
-                                            <tr id="@(row.UserID)">
-                                                @*<td id ="userIDRow">@(row.UserID)</td>*@
+                                            <tr @*id="@(row.UserID)"*@>
+                                                <td style="display:none;" id ="userIDRow">@(row.UserID)</td>
                                                 <td>@(row.Username)</td>
                                                 <td>@(row.FirstName)</td>
                                                 <td>@(row.LastName)</td>
@@ -767,6 +767,23 @@
 
 
 <script>
+
+
+    //Funksion per te kapur id e rreshtit on click?
+    /*id = "userIDRow"*/
+
+    //function myFunction(el) {
+    //    var id = el.parentNode.parentNode.parentNode.id;
+    //    console.log(id);
+    //    var all = document.querySelectorAll('.dropdown-content');
+    //    for (var i = 0; i < all.length; i++) {
+    //        all[i].classList.remove('show');
+    //    }
+    //    document.getElementById(id).querySelector('.dropdown-content').classList.toggle("show");
+    //}
+
+
+
 
 
     $("#usersTable tr").click(function () {

@@ -53,7 +53,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Shiko Document</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Preview Document</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -65,8 +65,8 @@
                         <div class="ikona">
                             <span class="actions">
                                 <ul>
-                                    <span class="mr-4"><button data-toggle="modal" data-target="#    " data-placement="left" title="Document Visibility" class="btn_ikone_disabled"><i class="fa fa-eye"></i></button></span>
-                                    <span class="mr-4">@*<button data-toggle="modal" data-placement="left"  title="Shkarko dokument" ><i class="fas fa-arrow-down"></i></button>*@</span>
+                                    <span class="mr-4"><button data-toggle="modal" data-target="#    " data-placement="left" title="Preview Document" class="btn_ikone_disabled"><i class="fa fa-eye"></i></button></span>
+                                    <span class="mr-4"><button data-toggle="modal" data-placement="left"  title="Download Document" ><i class="fas fa-arrow-down"></i></button></span>
                                 </ul>
                             </span>
                         </div>
@@ -88,7 +88,7 @@
 
 
                 <div id="document-container" style="margin-top:30px;">
-                    <iframe src="" width="100%" height="800px;"></iframe>
+                    <iframe id="documentIFrame" src="" width="100%" height="800px;"></iframe>
                 </div>
 
             </div>
@@ -104,7 +104,6 @@
         <div class="container">
 
             <div class="row">
-
                 <div class="row col-md-12">
                     <label class="text-start">Please click a file to preview additional information!</label>
                 </div>
