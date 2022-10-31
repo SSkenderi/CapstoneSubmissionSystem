@@ -235,8 +235,8 @@
                 <div class="col-md-12">
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="navStudentTab" onclick="hideFaculty()" data-toggle="tab" href="#navStudent" role="tab" aria-controls="nav-home" aria-selected="true">User Managment</a>
-                            <a class="nav-item nav-link" id="navFacultyTab" data-toggle="tab" onclick="hideStudent()" href="#navFaculty" role="tab" aria-controls="nav-profile" aria-selected="false">Document Types Managment</a>
+                            <a class="nav-item nav-link active" id="navStudentTab" onclick="hideDocs()" data-toggle="tab" href="#navStudent" role="tab" aria-controls="nav-home" aria-selected="true">User Managment</a>
+                            <a class="nav-item nav-link" id="navDocsTab" data-toggle="tab" onclick="hideStudent()" href="#navDocs" role="tab" aria-controls="nav-profile" aria-selected="false">Document Types Managment</a>
                         </div>
                     </nav>
                     <div class="tab-content" id="nav-tabContent">
@@ -795,7 +795,7 @@
         document.getElementById("navStudent").style.visibility = "hidden";
         document.getElementById("navDocs").style.visibility = "visible";
     }
-    function hideFaculty() {
+    function hideDocs() {
         document.getElementById("navStudent").style.visibility = "visible";
         document.getElementById("navDocs").style.visibility = "hidden";
     }
