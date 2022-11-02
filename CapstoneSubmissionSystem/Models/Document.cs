@@ -21,6 +21,7 @@ namespace CapstoneSubmissionSystem.Models
         public int OwnerID { get; set; }
         public int TypeID { get; set; }
         public int Visibility { get; set; }
+        public string FilePath { get; set; }
     
         public virtual DocType DocType { get; set; }
         public virtual User User { get; set; }

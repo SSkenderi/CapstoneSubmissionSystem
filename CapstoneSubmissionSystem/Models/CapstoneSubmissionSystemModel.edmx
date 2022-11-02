@@ -12,6 +12,7 @@
           <Property Name="TypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TypeName" Type="nvarchar" MaxLength="100" />
           <Property Name="Visible" Type="tinyint" Nullable="false" />
+          <Property Name="TypeCode" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Documents">
           <Key>
@@ -24,6 +25,7 @@
           <Property Name="OwnerID" Type="int" Nullable="false" />
           <Property Name="TypeID" Type="int" Nullable="false" />
           <Property Name="Visibility" Type="int" Nullable="false" />
+          <Property Name="FilePath" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Faculties">
           <Key>
@@ -149,6 +151,7 @@
           <Property Name="TypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Visible" Type="Byte" Nullable="false" />
           <NavigationProperty Name="Documents" Relationship="Self.FK__Documents__TypeI__32E0915F" FromRole="DocTypes" ToRole="Documents" />
+          <Property Name="TypeCode" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityType Name="Document">
           <Key>
@@ -163,6 +166,7 @@
           <Property Name="Visibility" Type="Int32" Nullable="false" />
           <NavigationProperty Name="DocType" Relationship="Self.FK__Documents__TypeI__32E0915F" FromRole="Documents" ToRole="DocTypes" />
           <NavigationProperty Name="User" Relationship="Self.FK__Documents__Owner__31EC6D26" FromRole="Documents" ToRole="Users" />
+          <Property Name="FilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Faculty">
           <Key>
@@ -292,6 +296,7 @@
           <EntitySetMapping Name="DocTypes">
             <EntityTypeMapping TypeName="CapstoneSubmissionSystemDBModel.DocType">
               <MappingFragment StoreEntitySet="DocTypes">
+                <ScalarProperty Name="TypeCode" ColumnName="TypeCode" />
                 <ScalarProperty Name="TypeID" ColumnName="TypeID" />
                 <ScalarProperty Name="TypeName" ColumnName="TypeName" />
                 <ScalarProperty Name="Visible" ColumnName="Visible" />
@@ -301,6 +306,7 @@
           <EntitySetMapping Name="Documents">
             <EntityTypeMapping TypeName="CapstoneSubmissionSystemDBModel.Document">
               <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="DocumentID" ColumnName="DocumentID" />
                 <ScalarProperty Name="FileContent" ColumnName="FileContent" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />

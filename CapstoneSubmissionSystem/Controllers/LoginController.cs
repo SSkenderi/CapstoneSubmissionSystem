@@ -15,7 +15,7 @@ namespace CapstoneSubmissionSystem.Controllers
         public ActionResult Index()
         {
 
-            if (Session["UserID"]!=null)
+            if (Session["UserID"] != null)
             {
 
                 return RedirectToAction("Index", "Home");
@@ -24,10 +24,17 @@ namespace CapstoneSubmissionSystem.Controllers
             return View();
         }
 
+
+        public ActionResult Logout()
+        {
+            Session["UserID"] = null;
+            return RedirectToAction("Index", "Login");
+        }
+
         [HttpPost]
         public ActionResult Index(User um)
         {
-    
+
             var loggedUser = new User();
             loggedUser = DBEntities1.Users.Where(u => u.Username.Equals(um.Username) && u.Password.Equals(um.Password)).FirstOrDefault();
             //Get logged in user

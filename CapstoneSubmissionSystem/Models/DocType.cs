@@ -23,6 +23,7 @@ namespace CapstoneSubmissionSystem.Models
         public int TypeID { get; set; }
         public string TypeName { get; set; }
         public byte Visible { get; set; }
+        public string TypeCode { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Document> Documents { get; set; }

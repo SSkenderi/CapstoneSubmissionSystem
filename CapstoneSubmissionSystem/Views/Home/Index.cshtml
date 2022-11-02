@@ -1,7 +1,5 @@
 ﻿@model CapstoneSubmissionSystem.ViewModels.HomePageDataViewModel
-@{
-    ViewBag.Title = "CapstoneSystem Home Page";
-}
+@{ ViewBag.Title = "CapstoneSystem Home Page"; }
 
 <head>
 
@@ -11,502 +9,25 @@
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-</head>
-
-@{
-    ViewBag.Title = "Capstone Submission System Home Page";
-}
-<script src="~/Scripts/bootstrap.js"></script>
-<script src="~/Scripts/bootstrap.bundle.js"></script>
-@*<script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>*@
-<script src="~/Scripts/jquery-2.2.4.js"></script>
-<script src="~/Scripts/jquery-2.2.4.min.js"></script>
-<script src="~/Scripts/jquery.validate.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-<body>
-    <nav class="navbar navbar-expand-lg p-3" style="background-color: #d24700; color: #d24700;">
-        <div class="container-fluid">
-            <a class="navbar-brand" style="color:white;" href="#">Capstone Submission System</a>
-            <img class="mb-12" src="~/Images/SSULogo.jpg" alt="" width="100" height="50">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class=" collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav ms-auto ">
-                    <li class="nav-item">
-                        <a class="nav-link login" style="color:white;" href="@Url.Action("Index", "Login")">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    @if (Model.LoggedUser.ISAdmin == 1)
-    { //admin user is logged in
-
-
-        //MODALS
-
-        <!--Add User popup-->
-
-        <div class="modal fade" id="modalAddUser" tabindex="-1" role="dialog" aria-labelledby="modalUploadTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Add User</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="input-group">
-                            <div class="input-group-append">
-                                <label for="exampleFormControlSelect1">Select User Type</label>
-                                @*<div class="form-row">*@
-                                <select class="form-control" id="userTypeDropdown" onchange="showDiv(this)">
-                                    <option>Select...</option>
-                                    <option value="0" id="facultySelected">Faculty</option>
-                                    <option value="1" id="studentSelected">Student</option>
-                                </select>
-
-                                <div class="row" style="display:none; margin-top:10px;" id="studentSelectFaculty">
-                                    <label for="exampleFormControlSelect1">Select Faculty Supervisor</label>
-                                    <div>
-                                        <select class="form-control" id="studentFacultySelection">
-                                            @foreach (var fOption in Model.Students.Where(fOption => (fOption.ISAdmin == 0 || fOption.ISAdmin == null) && (fOption.SupervisorID == null || fOption.SupervisorID == 0)))
-                                            {
-                                                <option>Select...</option>
-                                                <option id="facultyPicked" value="@(fOption.UserID)">@(fOption.FirstName) @(fOption.LastName)</option>
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                                @*</div>*@
-                            </div>
-                        </div>
-                        @*<div>
-                                <label for="exampleFormControlInput1">Fusha e Indeksimit</label>
-                                <input type="text" class="form-control" id="indexUpload" placeholder="Fusha e Indeksimit">
-                            </div>*@
-
-
-                        <label for="lblUserDetails" style="margin-top:10px;">User Details</label>
-                        <div class="form-row">
-                            @*dgdfgdfg*@
-                            <div class="col">
-                                <input type="text" id="userFirstName" class="form-control" placeholder="First Name">
-                            </div>
-                            <div class="col">
-                                <input type="text" id="userLasttName" class="form-control" placeholder="Last Name">
-                            </div>
-                        </div>
-                        <div class="form-row" style="margin-top: 10px;">
-                            <div class="col">
-                                <input type="text" id="userUsername" class="form-control" placeholder="Username">
-                            </div>
-                            <div class="col">
-                                <input type="text" id="userEmail" class="form-control" placeholder="Email">
-                            </div>
-                        </div>
-
-                        <div class="form-row" style="margin-top: 10px;">
-                            <div class="col">
-                                <input type="text" id="userPassword" class="form-control" placeholder="Password">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" id="hiqDocEmer" class="btn btn-secondary" @*onclick="hiqDocEmer()"*@ data-dismiss="modal">Cancel</button>
-                        <button type="button" id="uploadDocument" onclick="addUserFunc()" data-dismiss="modal" class="btn btn-primary">Add User</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Add User popup-->
-
-
-        <!--Add Fileupload popup-->
-        <div class="modal fade" id="modalAddUser" tabindex="-1" role="dialog" aria-labelledby="modalUploadTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Add Required File Upload</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                       
-                        @*<div>
-                                <label for="exampleFormControlInput1">Fusha e Indeksimit</label>
-                                <input type="text" class="form-control" id="indexUpload" placeholder="Fusha e Indeksimit">
-                            </div>*@
-
-
-                        <label for="lblUserDetails" style="margin-top:10px;">User Details</label>
-                        <div class="form-row">
-                            @*dgdfgdfg*@
-                            <div class="col">
-                                <input type="text" id="userFirstName" class="form-control" placeholder="Required Document Name">
-                            </div>
-                            @*<div class="col">
-                                <input type="text" id="userLasttName" class="form-control" placeholder="Last Name">
-                            </div>*@
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" id="hiqDocEmer" class="btn btn-secondary" onclick="hiqDocEmer()" data-dismiss="modal">Cancel</button>
-                        <button type="button" id="uploadDocument" onclick="addFileUploadFunc()" data-dismiss="modal" class="btn btn-primary">Add File Upload</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Add Fileupload popup-->
-
-
-
-
-        <!--Delete User popup-->
-        <div class="modal fade" id="modalDeleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Delete User</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="col-auto modal-body d-flex p-2">
-                        <h5> Are you sure you want to delete this user? <br />This action cannot be undone.</h5>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="DeleteUser()">Delete User</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Delete User popup-->
-
-        <!--Delete Doc popup-->
-        <div class="modal fade" id="modaldeleteFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Delete Document</h5>
-                        <button type="button" class="close" ddata-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="col-auto modal-body d-flex p-2">
-                        <h5> Are you sure you want to delete this file? <br />This action cannot be undone.</h5>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="DeleteF()">Delete File</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Delete Doc popup-->
-
-
-
-
-        <div style="margin-bottom:10px;">
-            <h4 class="text-start">Administrative Managment</h4>
-            <label class="text-start">Welcome, Administrator</label>
-        </div>
-        //duhet rregulluar design i ketyre tre diveve
-        @*<div class="row border-bottom border-2 rounded">
-                <div class="col-md-6 border border-bottom-0 border-2 rounded">
-                    <h4 class="text-center"><a href="" class="removeUnderine">Manage Document Types</a></h4>
-                </div>
-                <div class="col-md-6 border border-bottom-0 border-2 rounded">
-                    <h4 class="text-center"><a href="" class="removeUnderine">Manage Users</a></h4>
-                </div>
-            </div>*@
-
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <nav>
-                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="navStudentTab" onclick="hideDocs()" data-toggle="tab" href="#navStudent" role="tab" aria-controls="nav-home" aria-selected="true">User Managment</a>
-                            <a class="nav-item nav-link" id="navDocsTab" data-toggle="tab" onclick="hideStudent()" href="#navDocs" role="tab" aria-controls="nav-profile" aria-selected="false">Document Types Managment</a>
-                        </div>
-                    </nav>
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="navStudent" role="tabpanel" aria-labelledby="nav-home-tab">
-                            <div class="row">
-                                <div class="col-6">
-                                    <!-- Icons-->
-                                    <div class="ikona">
-                                        <span class="actions">
-                                            <ul>
-                                                <span class="mr-4"><button data-bs-toggle="modal" data-bs-target="#modalAddUser" data-placement="left" title="Shto dokument" class="btn_ikone"><i class="fa fa-plus"></i></button></span>
-                                                <span class="mr-4"><button data-bs-toggle="modal" data-bs-target="#modalDeleteUser" data-placement="left" title="Delete dokument" class="btn_ikone"><i class="far fa-trash-alt"></i></button></span>
-                                            </ul>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <table class="table" id="usersTable" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th class="disabled" id="usernameHeader">Username</th>
-                                        <th class="disabled" id="firstNameHeader">First Name</th>
-                                        <th class="disabled" id="lastNameHeader">Last Name</th>
-                                        <th class="disabled" id="emailHeader">Email</th>
-                                        <th class="disabled" id="passwordHeader">Password</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @{
-                                        foreach (var row in Model.Students)
-                                        {
-                                            <tr @*onclick="reply_click()"*@ @* id="@(row.UserID)"*@>
-                                                <td style="display:none;" id ="userIDRow">@(row.UserID)</td>
-                                                <td>@(row.Username)</td>
-                                                <td>@(row.FirstName)</td>
-                                                <td>@(row.LastName)</td>
-                                                <td>@(row.Email)</td>
-                                                <td>@(row.Password)</td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane fade active" id="navDocs" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            <table class="table" id="documentsTable" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th id="UploadID">Upload ID</th>
-                                        <th id="uploadNameID">Upload Name</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @{
-                                        foreach (var row in Model.DocTypes)
-                                        {
-                                            <tr>
-                                                <td>@(row.TypeID)</td>
-                                                <td>@(row.TypeName)</td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-
-    else if (Model.LoggedUser.SupervisorID != null && Model.LoggedUser.SupervisorID != 0)
-    { //student user is logged in
-
-
-
-        //Ne fillim te faqes nje design te tipit "WELCOME XX"
-        //NJE TITULL, YOU CAN UPLOAD YOUR FILES HERE
-
-        //ketu duhet te krijosh design per nje input type file ku te kete nje label me emrin e dokumentit dhe nje fileupload per dokumentin
-
-
-
-
-
-        <div class="container" style="max-width: 800px !important;margin: auto !important;">
-            <div class="row">
-
-                <div class="row col-md-12">
-                    <label class="text-start">Welcome, @Model.LoggedUser.FirstName @Model.LoggedUser.LastName</label>
-                </div>
-            </div>
-            <div class="row">
-
-                <div class="row col-md-12">
-                    <label class="text-start">Please submit the required documents!</label>
-                </div>
-            </div>
-            <div class="row">
-                @{
-                    foreach (var docu in Model.DocTypes)
-                    {
-                        @*<div class="col-md-12">
-                                <div class="col-md-5">@docu.TypeName</div>
-                                <div class="col-md-7"><input type="file" id="document@(docu.TypeID)" /></div>
-                            </div>*@
-
-                        <div class="accordion pt-1" id="accordionPanelsStayOpenExample">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                    <button class="accordion-button accordionTitle" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                                        @docu.TypeName
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                                    <div id="documentErrormsg@(docu.TypeID)" class="accordion-body pb-0 hidden" style="color: #930000;font-weight: 500; do">Please chose one document</div>
-                                    <div class="accordion-body">
-                                        <div class="col-md-12">
-                                            <input type="file" id="document@(docu.TypeID)" oninput="removeError('documentErrormsg@(docu.TypeID)')" />
-                                            <button class="float-none" value="Submit" onclick=ValidateInputAndSubmit(@(docu.TypeID))>Submit</button>
-                                            @{ if (Model.Documents.Any(d => d.TypeID == docu.TypeID))
-                                                {
-                                                    <img class="mb-12 float-end" id="uploadStatus@(docu.TypeID)" src="~/Images/green_checkmark.png" alt="" width="50" height="50">
-                                                }
-                                                else
-                                                {
-                                                    <img class="mb-12 float-end" id="uploadStatus@(docu.TypeID)" src="~/Images/red x.png" alt="" width="50" height="50">
-                                                }
-                                            }
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    }
-                }
-            </div>
-
-        </div>
-
-
-
-
-
-    }
-    else
-    { //faculty user is logged in
-        <div>
-            <div class="container">
-                <div class="row">
-
-                    <div class="row col-md-12">
-                        <label class="text-start">Welcome, @Model.LoggedUser.FirstName @Model.LoggedUser.LastName</label>
-                    </div>
-                </div>
-                
-                
-                <div class="modal fade" id="modalPreview" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Shiko Document</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-
-                                @*<div class="form-row">
-                                    <div class="col">
-                                        <input type="text" id="zyraUpload" class="form-control" placeholder="Zyra">
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" id="nrKutiUpload" class="form-control" placeholder="Nr i kutise">
-                                    </div>
-                                </div>*@
-                                
-                                <div id="document-container" style="margin-top:30px;">
-                                    <iframe src="" width="100%" height="800px;"></iframe>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-       
-                
-                <div id="StudentFolders">
-                    <div class="row">
-
-                        <div class="row col-md-12">
-                            <label class="text-start">Please click the folder to open student's data!</label>
-                        </div>
-                    </div>
-
-
-                    @* ketu do te krijosh design per nje tabele ku do te shfaqet DISA imazhe folderi
-                        dhe poshte folderit perkates emri i studentit)
-
-                        edhe ektu bej nje si titull welcome xx . Here you can view your student's files
-
-                    *@
-
-                    <div class="row">
-                        <div class="row col-md-12">
-                            @{
-                                int index = 0;
-                                foreach (var st in Model.Students)
-                                {
-                                    if (index % 3 == 0)
-                                    {
-                                        <br />
-                                        <br />
-                                    }
-                                    <div class="col-md-3">
-                                        <img onclick="afishostudentFolders(@st.UserID)" style="width:75px; height:85px;" src="~/Images/folder-icon.png" />
-                                        <br /><label> @st.FirstName @st.LastName</label>
-                                    </div>
-                                    index++;
-                                }
-                            }
-
-                        </div>
-
-                    </div>
-                </div>
-                <div id="StudentFiles">
-
-                </div>
-
-            </div>
-        </div>
-        <!--<div class="col">
-            <div class="breadcrumb">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb" id="LinkNav">
-                        <li class="breadcrumb-item">
-                            <a style='color:#4582ec;cursor:pointer' onclick="afishoSubjekteLink()">Students</a>
-                        </li>
-
-                    </ol>
-                </nav>
-            </div>-->
-        <!-- breadcrumb-->
-
-        <!--<div class="table-skedare" id="studentfiles">
-                    <ul id="lista-skedare">
-
-
-                        <li id="1" class="inlinineLink">
-                            <input type="checkbox" />
-                            <label for="decimal_input"> Skerdi</label>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>-->
-    }
 
 
     <style>
+
+        .typenamecls {
+        }
+
+        .docnamecls {
+        }
+
+        .tabsadmin {
+            color: #989a9d !important;
+            background: #cfcfcf !important;
+        }
+
+            .tabsadmin.active {
+                color: white !important;
+                background: #d24700 !important;
+            }
 
         .selected {
             background-color: #00205b;
@@ -557,7 +78,7 @@
             white-space: nowrap;
             padding: 0px;
             /*padding-top: 0px !important;
-            padding-bottom: 0px !important;*/
+                padding-bottom: 0px !important;*/
         }
 
         input[type=file]::-webkit-inner-spin-button,
@@ -569,10 +90,10 @@
         }
 
         /*            .container {
-                margin: 0 !important;
-                width: 100% !important;
-                max-width: 100% !important;
-            }*/
+                    margin: 0 !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                }*/
 
         a:hover, a:focus {
             text-decoration: none;
@@ -760,9 +281,481 @@
         }
 
         /*tr:nth-child(even) {
-            background-color: #dddddd;
-        }*/
+                background-color: #dddddd;
+            }*/
     </style>
+</head>
+
+@{ ViewBag.Title = "Capstone Submission System Home Page"; }
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/bootstrap.bundle.js"></script>
+@*<script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>*@
+<script src="~/Scripts/jquery-2.2.4.js"></script>
+<script src="~/Scripts/jquery-2.2.4.min.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<body>
+    <nav class="navbar navbar-expand-lg p-3" style="background-color: #d24700; color: #d24700;">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="color:white;" href="#">Capstone Submission System</a>
+            <img class="mb-12" src="~/Images/SSULogo.jpg" alt="" width="100" height="50">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class=" collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto ">
+                    <li class="nav-item">
+                        <a class="nav-link login" style="color:white;" href="@Url.Action("Logout", "Login")">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    @if (Model.LoggedUser.ISAdmin == 1)
+    { //admin user is logged in
+
+
+        //MODALS<!--Add User popup-->
+
+<div class="modal fade" id="modalAddUser" tabindex="-1" role="dialog" aria-labelledby="modalUploadTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <label for="exampleFormControlSelect1">Select User Type</label>
+                        @*<div class="form-row">*@
+                        <select class="form-control" id="userTypeDropdown" onchange="showDiv(this)">
+                            <option>Select...</option>
+                            <option value="0" id="facultySelected">Faculty</option>
+                            <option value="1" id="studentSelected">Student</option>
+                        </select>
+
+                        <div class="row" style="display:none; margin-top:10px;" id="studentSelectFaculty">
+                            <label for="exampleFormControlSelect1">Select Faculty Supervisor</label>
+                            <div>
+                                <select class="form-control" id="studentFacultySelection">
+                                    @foreach (var fOption in Model.Students.Where(fOption => (fOption.ISAdmin == 0 || fOption.ISAdmin == null) && (fOption.SupervisorID == null || fOption.SupervisorID == 0)))
+                                    {
+                    <option>Select...</option>
+                                        <option id="facultyPicked" value="@(fOption.UserID)">@(fOption.FirstName) @(fOption.LastName)</option>
+}
+                                </select>
+                            </div>
+                        </div>
+                        @*</div>*@
+                    </div>
+                </div>
+                @*<div>
+                        <label for="exampleFormControlInput1">Fusha e Indeksimit</label>
+                        <input type="text" class="form-control" id="indexUpload" placeholder="Fusha e Indeksimit">
+                    </div>*@
+
+
+                <label for="lblUserDetails" style="margin-top:10px;">User Details</label>
+                <div class="form-row">
+                    @*dgdfgdfg*@
+                    <div class="col">
+                        <input type="text" id="userFirstName" class="form-control" placeholder="First Name">
+                    </div>
+                    <div class="col">
+                        <input type="text" id="userLasttName" class="form-control" placeholder="Last Name">
+                    </div>
+                </div>
+                <div class="form-row" style="margin-top: 10px;">
+                    <div class="col">
+                        <input type="text" id="userUsername" class="form-control" placeholder="Username">
+                    </div>
+                    <div class="col">
+                        <input type="text" id="userEmail" class="form-control" placeholder="Email">
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-top: 10px;">
+                    <div class="col">
+                        <input type="password" id="userPassword" class="form-control" placeholder="Password">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" id="hiqDocEmer" class="btn btn-secondary" onclick="hiqDocEmer()" data-dismiss="modal">Cancel</button>
+                <button type="button" id="uploadDocument" onclick="addUserFunc()" data-dismiss="modal" class="btn btn-primary">Add User</button>
+            </div>
+        </div>
+    </div>
+</div> <!--Add User popup--> <!--Add Fileupload popup-->
+               
+
+                                <div class="modal fade" id="modalAddReqDoc" tabindex="-1" role="dialog" aria-labelledby="modalUploadTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Add Required File Upload</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                @*<div>
+                                                        <label for="exampleFormControlInput1">Fusha e Indeksimit</label>
+                                                        <input type="text" class="form-control" id="indexUpload" placeholder="Fusha e Indeksimit">
+                                                    </div>*@
+
+
+                                                <label for="lblUserDetails" style="margin-top:10px;">Please enter name of new the required document.</label>
+                                                <div class="form-row">
+
+                                                    <div class="col">
+                                                        <input type="text" id="requiredDocID" class="form-control" placeholder="Required Document Name">
+                                                    </div>
+                                                    @*<div class="col">
+                                                            <input type="text" id="userLasttName" class="form-control" placeholder="Last Name">
+                                                        </div>*@
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" id="hiqDocEmer" class="btn btn-secondary" @*onclick="hiqDocEmer()"*@ data-dismiss="modal">Cancel</button>
+                                                <button type="button" id="uploadDocument" onclick="addFileUploadFunc()" data-dismiss="modal" class="btn btn-primary">Add File Upload</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                                <div class="modal fade" id="modalDeleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLongTitle">Delete User</h5>
+                                                                <button type="button" id="closedeletemodal" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-auto modal-body d-flex p-2">
+                                                                <h5> Are you sure you want to delete this user? <br />This action cannot be undone.</h5>
+                                                            </div>
+                                                            <div class="modal-footer justify-content-center">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                                <button type="button" class="btn btn-primary" onclick="DeleteUser()">Delete User</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> <!--Delete User popup--> <!--Delete Doc popup-->
+                                                                <div class="modal fade" id="modaldeleteFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="exampleModalLongTitle">Delete Document</h5>
+                                                                                <button type="button" class="close" ddata-bs-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="col-auto modal-body d-flex p-2">
+                                                                                <h5> Are you sure you want to delete this file? <br />This action cannot be undone.</h5>
+                                                                            </div>
+                                                                            <div class="modal-footer justify-content-center">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                                                <button type="button" class="btn btn-primary" onclick="DeleteF()">Delete File</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div> <!--Delete Doc popup-->
+
+
+
+
+                                                                                <div style="margin-bottom:10px;" class="col-md-12 p-3 pb-0 pt-0">
+                                                                                    <h4 class="text-start col-md-12">Administrative Managment</h4>
+                                                                                    <label class="text-start col-md-12">Welcome, Administrator</label>
+                                                                                </div> //duhet rregulluar design i ketyre tre diveve
+                                                                                @*<div class="row border-bottom border-2 rounded">
+                                                                                        <div class="col-md-6 border border-bottom-0 border-2 rounded">
+                                                                                            <h4 class="text-center"><a href="" class="removeUnderine">Manage Document Types</a></h4>
+                                                                                        </div>
+                                                                                        <div class="col-md-6 border border-bottom-0 border-2 rounded">
+                                                                                            <h4 class="text-center"><a href="" class="removeUnderine">Manage Users</a></h4>
+                                                                                        </div>
+                                                                                    </div>*@
+
+                                                                                                <div class="container">
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-md-12">
+                                                                                                            <nav>
+                                                                                                                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                                                                                                    <a class="nav-item nav-link active tabsadmin" id="navStudentTab" onclick="hideDocs()" data-toggle="tab" href="#navStudent" role="tab" aria-controls="nav-home" aria-selected="true">User Managment</a>
+                                                                                                                    <a class="nav-item nav-link tabsadmin" id="navDocsTab" data-toggle="tab" onclick="hideStudent()" href="#navDocs" role="tab" aria-controls="nav-profile" aria-selected="false">Document Types Managment</a>
+                                                                                                                </div>
+                                                                                                            </nav>
+                                                                                                            <div class="tab-content" id="nav-tabContent">
+                                                                                                                <div class="tab-pane fade show active" id="navStudent" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                                                                                    <div class="col-md-12 p-2">
+                                                                                                                        <div class="col-6">
+                                                                                                                            <!-- Icons-->
+                                                                                                                            <div class="ikona">
+                                                                                                                                <span class="actions">
+
+                                                                                                                                    <span class="mr-4"><button data-bs-toggle="modal" data-bs-target="#modalAddUser" data-placement="left" title="Shto dokument" class="btn_ikone"><i class="fa fa-plus"></i></button></span>
+                                                                                                                                    <span class="mr-4"><button data-bs-toggle="modal" data-bs-target="#modalDeleteUser" data-placement="left" title="Delete dokument" class="btn_ikone"><i class="far fa-trash-alt"></i></button></span>
+
+                                                                                                                                </span>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <div class="col-md-12" style="overflow-y: auto;max-height: 50vh;">
+                                                                                                                        <table class="table" id="usersTable" cellspacing="0">
+                                                                                                                            <thead>
+                                                                                                                                <tr>
+                                                                                                                                    <th id="usernameHeader">Username</th>
+                                                                                                                                    <th id="firstNameHeader">First Name</th>
+                                                                                                                                    <th id="lastNameHeader">Last Name</th>
+                                                                                                                                    <th id="emailHeader">Email</th>
+                                                                                                                                    <th id="passwordHeader">Password</th>
+                                                                                                                                    <th id="passwordHeader">User Type</th>
+                                                                                                                                    <th></th>
+                                                                                                                                </tr>
+                                                                                                                            </thead>
+                                                                                                                            <tbody>
+                                                                                                                                @{ foreach (var row in Model.Students)
+                                                                                                                                                    {
+                                                                                                                                    <tr @* onclick="reply_click(userIDRow)"id="@(row.UserID)"*@>
+                                                                                                                                        <td style="display:none;" id="userIDRow">@(row.UserID)</td>
+                                                                                                                                        <td>@(row.Username)</td>
+                                                                                                                                        <td>@(row.FirstName)</td>
+                                                                                                                                        <td>@(row.LastName)</td>
+                                                                                                                                        <td>@(row.Email)</td>
+                                                                                                                                        <td>@(row.Password)</td>
+                                                                                                                                        @if (row.ISAdmin == 0 && row.SupervisorID != null)
+                                                                                                                                        {
+                                                                                                                                        <td>Student</td> 
+                                                                                                                                         }
+                                                                                                                                        
+                                                                                                                                        else if (row.ISAdmin == 0 && row.SupervisorID == null)
+                                                                                                                                        {
+                                                                                                                                        <td>Faculty</td> 
+                                                                                                                                        }
+                                                                                                                                        
+                                                                                                                                        else
+                                                                                                                                        {
+                                                                                                                                        <td>Admin</td>
+                                                                                                                                        }
+                                                                                                                                        <td><input class="unchecked" type="checkbox" onclick="changeclass(this)" id="@(row.UserID)" /></td>
+                                                                                                                                    </tr> } }
+                                                                                                                            </tbody>
+                                                                                                                        </table>
+                                                                                                                    </div>
+                                                                                                                </div>
+
+                                                                                                                <div class="tab-pane  active" id="navDocs" role="tabpanel" style="display:none;" aria-labelledby="nav-profile-tab">
+                                                                                                                    <div class="col-md-12 p-2">
+                                                                                                                        <div class="col-6">
+                                                                                                                            <!-- Icons-->
+                                                                                                                            <div class="ikona">
+                                                                                                                                <span class="actions">
+                                                                                                                                    <span class="mr-4">
+                                                                                                                                    <button data-bs-toggle="modal" data-bs-target="#modalAddReqDoc" data-placement="left" title="Shto dokument" class="btn_ikone"><i class="fa fa-plus"></i></button></span>
+                                                                                                                                </span>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <table class="table" id="documentsTable" cellspacing="0">
+                                                                                                                        <thead>
+                                                                                                                            <tr>
+                                                                                                                                <th id="UploadID">Upload ID</th>
+                                                                                                                                <th id="uploadNameID">Upload Name</th>
+                                                                                                                                <th id="uploadNameVisible">Visible</th>
+                                                                                                                            </tr>
+                                                                                                                        </thead>
+                                                                                                                        <tbody>
+                                                                                                                            @{ foreach (var row in Model.DocTypes)
+                                                                                                                                {
+                                                                                                                <tr>
+                                                                                                                    <td>@(row.TypeID)</td>
+                                                                                                                    <td>@(row.TypeName)</td>
+
+                                                                                                                    @if (row.Visible == 1)
+                                                                                                                    {
+                                                                                                                <td><input type="checkbox" id="@row.TypeID" onclick="togglevisibilityUpload(@row.TypeID, 1)" checked /></td>
+ }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <td><input type="checkbox" id="@row.TypeID" onclick="togglevisibilityUpload(@row.TypeID,0)" /></td>
+}
+                                                                                                                </tr>
+ } }
+                                                                                                                        </tbody>
+                                                                                                                    </table>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div> }
+
+
+                                                                                            else if (Model.LoggedUser.SupervisorID != null && Model.LoggedUser.SupervisorID != 0)
+                                                                                            { //student user is logged in
+
+
+
+                                                                                                //Ne fillim te faqes nje design te tipit "WELCOME XX"
+                                                                                                //NJE TITULL, YOU CAN UPLOAD YOUR FILES HERE
+
+                                                                                                //ketu duhet te krijosh design per nje input type file ku te kete nje label me emrin e dokumentit dhe nje fileupload per dokumentin
+
+
+
+
+
+                                                                                <div class="container" style="max-width: 800px !important;margin: auto !important;">
+                                                                                    <div class="row">
+
+                                                                                        <div class="row col-md-12">
+                                                                                            <label class="text-start">Welcome, @Model.LoggedUser.FirstName @Model.LoggedUser.LastName</label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="row">
+
+                                                                                        <div class="row col-md-12">
+                                                                                            <label class="text-start">Please submit the required documents!</label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="row">
+                                                                                        @{ foreach (var docu in Model.DocTypes)
+                                                                                            { @*<div class="col-md-12">
+                                                                                                        <div class="col-md-5">@docu.TypeName</div>
+                                                                                                        <div class="col-md-7"><input type="file" id="document@(docu.TypeID)" /></div>
+                                                                                                    </div>*@
+
+                                                                                                                <div class="accordion pt-1" id="accordionPanelsStayOpenExample">
+                                                                                                                    <div class="accordion-item">
+                                                                                                                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                                                                                                            <button class="accordion-button accordionTitle" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                                                                                                                @docu.TypeName
+                                                                                                                            </button>
+                                                                                                                        </h2>
+                                                                                                                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                                                                                                            <div id="documentErrormsg@(docu.TypeID)" class="accordion-body pb-0 hidden" style="color: #930000;font-weight: 500; do">Please chose one document</div>
+                                                                                                                            <div class="accordion-body">
+                                                                                                                                <div class="col-md-12">
+                                                                                                                                    <input type="file" id="document@(docu.TypeID)" oninput="removeError('documentErrormsg@(docu.TypeID)')" />
+                                                                                                                                    <button class="float-none" value="Submit" onclick=ValidateInputAndSubmit(@(docu.TypeID))>Submit</button>
+                                                                                                                                    @{ var document1 = Model.Documents.Where(d => d.TypeID == docu.TypeID).Select(d => d).FirstOrDefault();
+
+
+                                                                                                                                                            if (Model.Documents.Any(d => d.TypeID == docu.TypeID))
+                                                                                                                                                            {
+                                                                                                                                                                var stind = document1.FilePath.LastIndexOf("FileRepo");
+                                                                                                                                                                if (stind > 0)
+                                                                                                                                                                {
+                                                                                                                                        <div class="mb-12 float-end">
+                                                                                                                                            <a target="_blank" href="@document1.FilePath.Substring(stind)">@document1.FileName</a>
+                                                                                                                                            <img id="uploadStatus@(docu.TypeID)" src="~/Images/green_checkmark.png" alt="" width="30" height="30">
+                                                                                                                                        </div> }
+                                                                                                                                                            }
+                                                                                                                                                            else
+                                                                                                                                                            {
+                                                                                                                                        <img class="mb-12 float-end" id="uploadStatus@(docu.TypeID)" src="~/Images/red x.png" alt="" width="30" height="30"> } }
+
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div> 
+                                                                                                                } 
+                                                                                                              }
+                                                                                    </div>
+
+                                                                                </div> 
+                                                                                }
+                                                                            else
+                                                                            { //faculty user is logged in
+                                                                <div>
+                                                                    <div class="container">
+                                                                        <div class="row">
+
+                                                                            <div class="row col-md-12">
+                                                                                <label class="text-start">Welcome, @Model.LoggedUser.FirstName @Model.LoggedUser.LastName</label>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div id="StudentFolders">
+                                                                            <div class="row">
+
+                                                                                <div class="row col-md-12">
+                                                                                    <label class="text-start">Please click the folder to open student's data!</label>
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            @* ketu do te krijosh design per nje tabele ku do te shfaqet DISA imazhe folderi
+                                                                                dhe poshte folderit perkates emri i studentit)
+
+                                                                                edhe ektu bej nje si titull welcome xx . Here you can view your student's files
+
+                                                                            *@
+
+                                                                            <div class="row">
+                                                                                <div class="row col-md-12">
+                                                                                    @{ int index = 0;
+                                                                                        foreach (var st in Model.Students)
+                                                                                        {
+                                                                                            if (index % 3 == 0)
+                                                                                            {
+                                                                        <br />
+                                                                                                <br /> 
+                                                                                                }
+                                                                        <div class="col-md-3">
+                                                                            <img onclick="afishostudentFolders(@st.UserID)" style="width:75px; height:85px;" src="~/Images/folder-icon.png" />
+                                                                            <br /><label> @st.FirstName @st.LastName</label>
+                                                                        </div> index++;
+                                                                    } 
+                                                                                        }
+
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div id="StudentFiles">
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                                                <!--<div class="col">
+                                                                                    <div class="breadcrumb">
+                                                                                        <nav aria-label="breadcrumb">
+                                                                                            <ol class="breadcrumb" id="LinkNav">
+                                                                                                <li class="breadcrumb-item">
+                                                                                                    <a style='color:#4582ec;cursor:pointer' onclick="afishoSubjekteLink()">Students</a>
+                                                                                                </li>
+
+                                                                                            </ol>
+                                                                                        </nav>
+                                                                                    </div>--> <!-- breadcrumb-->
+                                                                                                <!--<div class="table-skedare" id="studentfiles">
+                                                                                                            <ul id="lista-skedare">
+
+
+                                                                                                                <li id="1" class="inlinineLink">
+                                                                                                                    <input type="checkbox" />
+                                                                                                                    <label for="decimal_input"> Skerdi</label>
+                                                                                                                </li>
+                                                                                                            </ul>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>-->}
+
+
 </body>
 
 
@@ -816,12 +809,17 @@
     }
 
     function hideStudent() {
-        document.getElementById("navStudent").style.visibility = "hidden";
-        document.getElementById("navDocs").style.visibility = "visible";
+        document.getElementById("navStudent").style.display = "none";
+        document.getElementById("navDocs").style.display = "block";
+
+        document.getElementById("navStudentTab").classList.remove("active");
+        document.getElementById("navDocsTab").classList.add("active");
     }
     function hideDocs() {
-        document.getElementById("navStudent").style.visibility = "visible";
-        document.getElementById("navDocs").style.visibility = "hidden";
+        document.getElementById("navStudent").style.display = "block";
+        document.getElementById("navDocs").style.display = "none";
+        document.getElementById("navStudentTab").classList.add("active");
+        document.getElementById("navDocsTab").classList.remove("active");
     }
 
     function afishostudentFolders(subjekti) {
@@ -837,21 +835,25 @@
             data: { StudentID: subjekti },
             success: function (response) {
                 if (response.success == "success") {
-                            //27TETOR
-
+                    //27TETOR
                     //TE HTML QE GJENEROHET KETU DUHET TE SHTOHEN STILIZIMET PER TITUJT DHE DOKUMENTAT QE SHFAQEN
-                    html += " <h3>DOCUMENTS UPLOADED BY " + response.studentname + "</h3> <br>";
+                    html += " <h3>DOCUMENTS UPLOADED BY " + response.studentname + "</h3> <br><div> ";
                     for (i = 0; i < response.docnames.length; i++) {
-
-                        html += "<div>" + response.doctypes[i] + ": </div><div id=" + response.docids[i] + ">" + response.docnames[i] + "</div> <div class'inlinineLink'><button onclick='PreviewDoc(" + response.docids[i]+")'>PREVIEW</button></div><br>";
-
+                        if (i % 3 == 0) {
+                            html += "</div><div class='row col-md-12'>";
+                        }
+                        html += "<div class='col-md-4'> <div class='typenamecls'> " + response.doctypes[i] + " ";
+                        if (response.docvisibility[i] == 1) {
+                            html += "<input checked type=checkbox onclick='togglevisibility(" + response.docids[i] + ", 1)' />";
+                        } else if (response.docvisibility[i] == 0) {
+                            html += "<input type=checkbox onclick='togglevisibility(" + response.docids[i] + ", 0)' />";
+                        }
+                          html +=" </div > <div class='docnamecls' id=" + response.docids[i] + ">" + response.docnames[i] + "</div> <div class'inlinineLink' style = 'margin-top:7px;' > <a style='text-decoration: none;   background: #9999997a;     padding: 5px; border-radius: 5px;    margin-top: 5px;    color: #d24700;' target='blank' href='" + response.docpaths[i]+"'>PREVIEW</a></div ></div > ";
                     }
-
-
+                    html += "</div>";
                 }
                 document.getElementById("StudentFiles").innerHTML = html;
                 document.getElementById("StudentFiles").style.display = "block";
-
                 document.getElementById("StudentFolders").style.display = "none";
 
                 var test = 2;
@@ -865,7 +867,107 @@
         });
     }
 
+    function DeleteUser() {
+        //kapen userat
+        var els = document.getElementsByClassName("checked-user");
+        var ids = "";
+        Array.prototype.forEach.call(els, function (el) {
+            // Do stuff here
+            ids += el.id + "-";
+        });
 
+        if (els.length > 0) {
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+
+                url: "/home/DeleteUser",
+                async: false,
+                data: { userids: ids },
+                success: function (response) {
+                    if (response == "success") {
+
+                         alert("USERS DELETED SUCCESSFULLY");
+
+                    location.reload();
+                    } else {
+
+                         alert("TRY AGAIN LATER");
+
+                    location.reload();
+                    }
+
+
+                },
+                failure: function (result) {
+                    var test = 2;
+                }
+                , error: function (result) {
+                    var test = 3;
+                }
+            });
+        }
+        else {
+            alert("No users selected");
+            $("#closedeletemodal").click();
+        }
+
+    }
+
+    function togglevisibility(iddoc, visbilitynr) {
+        $.ajax({
+            type: 'post',
+            url: '/Home/ToggleVisibility',
+            data: {
+                iddocu: iddoc,
+                visbilitynr: visbilitynr
+            },
+            success: function (response) {
+                if (response == "SUKSES") {
+                    if (visbilitynr == 0)
+                    alert('This document is now visible to all faculty users.');
+                    if (visbilitynr == 1)
+                    alert('This document is now invisible to all faculty users.');
+
+
+                }
+                else {
+                    alert('Please try again later.');
+                }
+            },
+            error: function(response){
+                 alert('Please try again later.');
+            }
+           });
+
+    }
+    function togglevisibilityUpload(iddoc, visbilitynr) {
+        $.ajax({
+            type: 'post',
+            url: '/Home/ToggleVisibilityUpload',
+            data: {
+                doctypeid: iddoc
+            },
+            success: function (response) {
+                if (response == "SUKSES") {
+                    if (visbilitynr == 0)
+                    alert('This fileupload is now visible');
+                    if (visbilitynr == 1)
+                    alert('This fileuplpad is now invisible ');
+
+
+                }
+                else {
+                    alert('Please try again later.');
+                }
+            },
+            error: function(response){
+                 alert('Please try again later.');
+            }
+           });
+
+    }
     function ValidateInputAndSubmit(TypeID) {
 
 
@@ -897,12 +999,17 @@
             success: function (response) {
                 if (response == "SUKSES") {
                     document.getElementById("uploadStatus" + TypeID).src = "/Images/green_checkmark.png";
+
                     alert('The file has been uploaded successfully.');
+                    location.reload();
 
                 }
                 else {
                     alert('Please try again later.');
                 }
+            },
+            error: function(response){
+                 alert('Please try again later.');
             }
         });
         //ketu duhet te besh marrjen e base 64 nga inputi qe ti kalohet backendit
@@ -945,6 +1052,16 @@
 
     }
 
+    function changeclass(elem) {
+        if (elem.classList.contains("unchecked")) {
+            elem.classList.add("checked-user");
+            elem.classList.remove("unchecked");
+        }
+        else {
+            elem.classList.remove("checked-user");
+            elem.classList.add("unchecked");
+        }
+    }
 
     function addUserFunc() {
 
@@ -988,15 +1105,16 @@
             data: {
                 uType: userType,
                 admn: admin,
-                uName: userUsername,
                 fName: userFName,
                 lName: userLName,
                 email: userEmail,
+                uName: userUsername,
                 password: userPassword,
-                supID: pickedSupervisorID,
+                pickedSupervisorID: pickedSupervisorID,
             },
             success: function (result) {
                 alert('User added.');
+                location.reload();
 
             },
             failure: function (result) {
@@ -1015,9 +1133,8 @@
 
         /*//$("#myname").find(':selected').attr('isred');*/
 
-        var fileUploadID = document.getElementById('userFirstName').value;
-        var fileUploadName = document.getElementById('userLasttName').value;
-        
+        var reqDocID = document.getElementById('requiredDocID').value;
+
 
 
 
@@ -1025,24 +1142,18 @@
             type: "POST",
             dataType: 'json',
             async: true,
-            url: '/Home/SAMPLE',
+            url: '/Home/AddFileUpload',
             data: {
-                uType: userType,
-                admn: admin,
-                uName: userUsername,
-                fName: userFName,
-                lName: userLName,
-                email: userEmail,
-                password: userPassword,
-                supID: pickedSupervisorID,
+                fileUploadName: reqDocID,
+                
             },
             success: function (result) {
-                alert('User added.');
+                alert('Doc added.');
 
             },
             failure: function (result) {
 
-                alert('User add failed.');
+                alert('Doc add failed.');
             },
             error: function (result) {
                 alert('Error.');
@@ -1052,39 +1163,7 @@
 
     }
 
-    function addFileUploadFunc() {
-
-        /*//$("#myname").find(':selected').attr('isred');*/
-
-        //Vlera e id kapur me klick
-
-
-
-
-        $.ajax({
-            type: "POST",
-            dataType: 'json',
-            async: true,
-            url: '/Home/SAMPLE',
-            data: {
-                // Vlera e ID kapur me click
-            },
-            success: function (result) {
-                alert('User added.');
-
-            },
-            failure: function (result) {
-
-                alert('User add failed.');
-            },
-            error: function (result) {
-                alert('Error.');
-
-            },
-        });
-
-    }
-
+    
 
     function removeError(elemid) {
         $("#" + elemid).addClass("hidden");

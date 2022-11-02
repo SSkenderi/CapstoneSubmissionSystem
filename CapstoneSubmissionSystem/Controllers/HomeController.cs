@@ -44,15 +44,17 @@ namespace CapstoneSubmissionSystem.Controllers
             {
 
                 students = DBEntities1.Users.ToList();
-                doctypes = DBEntities1.DocTypes.Where(d=>d.Visible==1).ToList();
-                documents = DBEntities1.Documents.Where(d=>d.OwnerID ==loggedUser.UserID).ToList();
+                doctypes = DBEntities1.DocTypes.Where(d => d.Visible == 1).ToList();
+                documents = DBEntities1.Documents.Where(d => d.OwnerID == loggedUser.UserID).ToList();
                 homedata.LoggedUser = loggedUser;
                 homedata.Students = students;
                 homedata.DocTypes = doctypes;
 
                 if (loggedUser.ISAdmin == 1)
                 {
+                    doctypes = DBEntities1.DocTypes.ToList();
 
+                    homedata.DocTypes = doctypes;
 
                     return View(homedata);
                     //ketu kthehet direkt faqja se adminit si duhen as skedartet as fileuploadet pasi do hape faqet e tij per ti
@@ -62,9 +64,17 @@ namespace CapstoneSubmissionSystem.Controllers
                 {
                     //ketu jane fakultetet sepse ato nuk kane nje id supervizori
 
-                    //per neser ketu duhet te besh queryn qe kap te gjithe studentet e nje fakulteti dhe i shton te lista
-                    //students
-                    students = DBEntities1.Users.Where((s => s.SupervisorID != null || s.SupervisorID == 0)).ToList();
+                    var students2 = DBEntities1.Users.Where((s => s.SupervisorID != null && s.SupervisorID == loggedUser.UserID)).ToList();
+                    //studentet qe kane supervizor userin e loguar
+
+                    var facultyvisibledocsowners = DBEntities1.Documents.Where(d => d.Visibility == 1).Select(d => d.OwnerID).ToList();
+                    //userat, dokumentat e te cileve jane bere visible nga fakulteti
+
+                    var students1 = DBEntities1.Users.Where(u => facultyvisibledocsowners.Any(a => a == u.UserID)).ToList();
+                    //studentet qe kane dok te bera visible
+
+                    students = students1.Union(students2).ToList();
+
                 }
                 else
                 {
@@ -150,9 +160,10 @@ namespace CapstoneSubmissionSystem.Controllers
             addUser.ISAdmin = (byte)admn;
             addUser.Password = password;
             addUser.Email = email;
-            addUser.FacultyID = pickedSupervisorID;
-            
+            addUser.SupervisorID = pickedSupervisorID;
 
+            var faculty = DBEntities1.Users.Where(u => u.UserID == pickedSupervisorID).FirstOrDefault().FacultyID;
+            addUser.FacultyID = faculty;
             DBEntities1.Users.Add(addUser);
             DBEntities1.SaveChanges();
 
@@ -176,10 +187,57 @@ namespace CapstoneSubmissionSystem.Controllers
 
             //addFU.TypeID= fUploadID;
             addFU.TypeName = fileUploadName;
-           
+            addFU.Visible = 1;
 
 
             DBEntities1.DocTypes.Add(addFU);
+            DBEntities1.SaveChanges();
+
+            return new JsonResult
+            {
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue,
+                Data = "SUKSES"
+            };
+        }
+
+        [HttpPost]
+        public ActionResult ToggleVisibility(string iddocu, string visbilitynr)
+        {
+            int intiddoc = 0;
+            if (iddocu != null && iddocu != "")
+            {
+
+                intiddoc = Convert.ToInt32(iddocu);
+            }
+            var thisdoc = DBEntities1.Documents.Where(d => d.DocumentID == intiddoc).FirstOrDefault();
+            if (visbilitynr == "0")
+                thisdoc.Visibility = 1;
+            else if (visbilitynr == "1")
+                thisdoc.Visibility = 0;
+            DBEntities1.SaveChanges();
+
+            return new JsonResult
+            {
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue,
+                Data = "SUKSES"
+            };
+        }
+        [HttpPost]
+        public ActionResult ToggleVisibilityUpload(string doctypeid)
+        {
+            int intiddoc = 0;
+            if (doctypeid != null && doctypeid != "")
+            {
+
+                intiddoc = Convert.ToInt32(doctypeid);
+            }
+            var thisdoc = DBEntities1.DocTypes.Where(d => d.TypeID == intiddoc).FirstOrDefault();
+            if (thisdoc.Visible == 0)
+                thisdoc.Visible = 1;
+            else if (thisdoc.Visible == 1)
+                thisdoc.Visible = 0;
             DBEntities1.SaveChanges();
 
             return new JsonResult
@@ -194,23 +252,51 @@ namespace CapstoneSubmissionSystem.Controllers
 
 
 
-        public ActionResult DeleteUser(int userID)
+        public ActionResult DeleteUser(string userids)
         {
-            var deletedUser = DBEntities1.Users.Where(u => u.UserID == userID /*per tu pare prape*/).FirstOrDefault();
-            DBEntities1.Users.Remove(deletedUser);
-            DBEntities1.SaveChanges();
-            return Content("success");
+            var arrids = userids.Split('-').ToArray();
+            try
+            {
+
+
+                foreach (var iduser in arrids)
+                {
+                    if (iduser != "")
+                    {
+                        var idint = Convert.ToInt32(iduser);
+                        var deletedUser = DBEntities1.Users.Where(u => u.UserID == idint).FirstOrDefault();
+                        DBEntities1.Documents.RemoveRange(DBEntities1.Documents.Where(D => D.OwnerID == deletedUser.UserID).ToList());
+                        DBEntities1.Users.Remove(deletedUser);
+                        DBEntities1.SaveChanges();
+                    }
+                }
+                return new JsonResult
+                {
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = int.MaxValue,
+                    Data = "success"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult
+                {
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = int.MaxValue,
+                    Data = "failure"
+                };
+            }
         }
 
         public ActionResult HideFileTypes(int doctypeID, int LoggedUserID)
         {
             var DocTypesToHide = DBEntities1.DocTypes.Where(f => f.TypeID == doctypeID /*per tu pare prape*/).ToList();
-            foreach(var dt in DocTypesToHide)
+            foreach (var dt in DocTypesToHide)
             {
                 dt.Visible = 0;
                 DBEntities1.SaveChanges();
             }
-      
+
             return Content("success");
         }
 
@@ -270,71 +356,62 @@ namespace CapstoneSubmissionSystem.Controllers
         public ActionResult Shto()
         {
 
-           var files=  Request.Files["FileUpload"];
-           var userIDStr=  Request.Params["userID"].ToString();
-           var typeID =  Request.Params["typeID"].ToString(); 
+            var files = Request.Files["FileUpload"];
+            var userIDStr = Request.Params["userID"].ToString();
+            var typeID = Request.Params["typeID"].ToString();
+            string _FileName = "";
+            string _path = "";
+            if (files.ContentLength > 0)
+            {
+                _FileName = Path.GetFileName(files.FileName).Replace('`', ' ').Replace('\'', ' ');
 
+
+                if (Directory.Exists(Server.MapPath("~/FileRepo/" + userIDStr + "-" + typeID + "")))
+                {
+                    _path = Path.Combine(Server.MapPath("~/FileRepo/" + userIDStr + "-" + typeID + ""), _FileName);
+
+                    //The code will execute if the folder exists
+                }
+                else
+                {
+                    //The below code will create a folder if the folder is not exists in C#.Net.            
+                    DirectoryInfo folder = Directory.CreateDirectory(Server.MapPath("~/FileRepo/" + userIDStr + "-" + typeID + ""));
+                    _path = Path.Combine(Server.MapPath("~/FileRepo/" + userIDStr + "-" + typeID + ""), _FileName);
+
+                }
+
+                files.SaveAs(_path);
+            }
 
             //check if doc exists for this user
-
-             byte[] bytes;
             int userID = Convert.ToInt32(userIDStr);
             int DOCtypeID = Convert.ToInt32(typeID);
 
             //get document for this user if it exists
             var docexists = DBEntities1.Documents.Where(d => d.TypeID == DOCtypeID && d.OwnerID == userID).FirstOrDefault();
 
-            if(docexists != null && docexists.FileContent !=null )
+            if (docexists != null)
             {
-
-                using (Stream fs = files.InputStream)
-                {
-                    using (BinaryReader br = new BinaryReader(fs))
-                    {
-                        bytes = br.ReadBytes((Int32)fs.Length);
-                    }
-                   
-                    int index = files.FileName.LastIndexOf(".");
-                    string filenm = files.FileName.ToString();
-
-
-                    docexists.FileName = files.FileName.Substring(0, index);
-
-                    docexists.Extension = files.FileName.Substring(index + 1, 3);
-                    docexists.FileContent = bytes;
-
-                    DBEntities1.SaveChanges();
-
-
-                }
+                docexists.FileName = _FileName;
+                docexists.Extension = _FileName.Substring(_FileName.LastIndexOf(".") + 1, _FileName.Length - 1 - _FileName.LastIndexOf("."));
+                docexists.FilePath = _path;
+                DBEntities1.SaveChanges();
             }
-            else {
 
-
-                using (Stream fs = files.InputStream)
-                {
-                    using (BinaryReader br = new BinaryReader(fs))
-                    {
-                        bytes = br.ReadBytes((Int32)fs.Length);
-                    }
-                    Document dok1 = new Document();
-                    DateTime rn = DateTime.Now;
-                    int index = files.FileName.LastIndexOf(".");
-                    string filenm = files.FileName.ToString();
-
-
-                    dok1.FileName = files.FileName.Substring(0, index);
-
-                    dok1.TypeID = DOCtypeID;
-                    dok1.Extension = files.FileName.Substring(index + 1, 3);
-                    dok1.OwnerID = userID;
-                    dok1.FileContent = bytes;
-                    dok1.Visibility = 0;
-
-                    DBEntities1.Documents.Add(dok1);
-                    DBEntities1.SaveChanges();
-
-                }
+            else
+            {
+                Document dok1 = new Document();
+                DateTime rn = DateTime.Now;
+                int index = files.FileName.LastIndexOf(".");
+                string filenm = files.FileName.ToString().Replace('`', ' ').Replace('\'', ' ');
+                dok1.FileName = filenm;
+                dok1.TypeID = DOCtypeID;
+                dok1.Extension = _FileName.Substring(_FileName.LastIndexOf(".") + 1, _FileName.Length - 1 - _FileName.LastIndexOf("."));
+                dok1.OwnerID = userID;
+                dok1.FilePath = _path;
+                dok1.Visibility = 0;
+                DBEntities1.Documents.Add(dok1);
+                DBEntities1.SaveChanges();
             }
             return new JsonResult
             {
@@ -359,34 +436,45 @@ namespace CapstoneSubmissionSystem.Controllers
 
             student = DBEntities1.Users.Where(s => s.UserID == StudentID).FirstOrDefault();
 
-            documents = DBEntities1.Documents.Where(d => d.OwnerID == StudentID).ToList();
+            int iduseri = 0;
 
+
+            if (Session["UserID"] != null)
+            {
+                iduseri = Convert.ToInt32(Session["UserID"].ToString());
+            }
+
+
+            //marrim te gjithe dok nqs studenti eshte i fakultetit te loguar
+
+            if (student.SupervisorID == iduseri)
+            {
+                documents = DBEntities1.Documents.Where(d => d.OwnerID == StudentID).ToList();
+            }
+            else //folderi i hapur nuk eshte student i userit te loguar por i jane bere doc visible
+            {
+                documents = DBEntities1.Documents.Where(d => d.OwnerID == StudentID && d.Visibility == 1).ToList();
+            }
             StudentDocumentsDataViewModel studentDocumentsDataViewModel = new StudentDocumentsDataViewModel();
             studentDocumentsDataViewModel.Documents = documents;
             studentDocumentsDataViewModel.StudentUser = student;
-            string stname = student.FirstName + " " + student.LastName; 
+            string stname = student.FirstName + " " + student.LastName;
             return new JsonResult
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = int.MaxValue,
-                Data = new {
+                Data = new
+                {
                     docnames = studentDocumentsDataViewModel.Documents.Select(d => d.FileName).ToArray(),
                     docids = studentDocumentsDataViewModel.Documents.Select(d => d.DocumentID).ToArray(),
                     doctypes = studentDocumentsDataViewModel.Documents.Select(d => d.DocType.TypeName).ToArray(),
+                    docvisibility = studentDocumentsDataViewModel.Documents.Select(d => d.Visibility).ToArray(),
+                    docpaths = studentDocumentsDataViewModel.Documents.Select(d => d.FilePath.Substring(d.FilePath.LastIndexOf("CapstoneSubmissionSystem") + 24)).ToArray(),
                     studentname = stname,
                     success = "success"
                 }
             };
-
-
-
-
-
-
         }
-
-
-
 
     }
 }
