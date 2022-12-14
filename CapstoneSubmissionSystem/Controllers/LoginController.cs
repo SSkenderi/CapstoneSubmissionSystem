@@ -18,7 +18,7 @@ namespace CapstoneSubmissionSystem.Controllers
             if (Session["UserID"] != null)
             {
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
             return View();
@@ -28,7 +28,7 @@ namespace CapstoneSubmissionSystem.Controllers
         public ActionResult Logout()
         {
             Session["UserID"] = null;
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Index", "Login", new { area = "" });
         }
 
         [HttpPost]
@@ -37,44 +37,20 @@ namespace CapstoneSubmissionSystem.Controllers
 
             var loggedUser = new User();
             loggedUser = DBEntities1.Users.Where(u => u.Username.Equals(um.Username) && u.Password.Equals(um.Password)).FirstOrDefault();
-            //Get logged in user
-            //if (Session["UserID"] != null)
-            //{
-            //    loggedUser=DBEntities1.Users.Where(u=>u.UserID ==  Convert.ToInt32(Session["UserID"].ToString())).FirstOrDefault();
-            //}
+
 
             if (loggedUser != null && loggedUser.UserID != 0)
             {
                 Session["UserID"] = loggedUser.UserID.ToString();
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
                 //return View(loggedUser);
             }
             else
             {
                 ModelState.AddModelError("", "Username or password is incorrect.");
-                //return RedirectToAction("Index", "Login");
             }
 
             return View();
         }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
-
-
-
-
     }
 }

@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "VaultUri"
+    },
+    "storage1": {
+      "type": "storage",
+      "connectionId": "CapstoneSubmissionSystemEntities"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "LatestConString"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:CapstoneSubmissionSystemEntities"
+    },
+    "appInsights1": {
+      "ignored": "true",
+      "suggestion": "true",
+      "type": "appInsights",
+      "connectionId": ""
+    }
+  }
+}

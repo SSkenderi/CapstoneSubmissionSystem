@@ -78,23 +78,8 @@ namespace CapstoneSubmissionSystem.Controllers
                 }
                 else
                 {
-                    //ketu mbeten studentet
 
-                    //per neser ketu duhet te besh queryn qe kap te gjithe doctypes qe te visible kane vleren 1 dhe i shton 
-                    //te lista doctypes
                     doctypes = DBEntities1.DocTypes.Where(s => s.Visible == 1).ToList();
-
-
-                    //students = DBEntities1.Users.Where(s => s.ISAdmin == 0).ToList();
-
-                    //nje shembull me siper me linq ku te where fut kushtet qe do
-                    //var sql = $@"SELECT    * from students";
-                    //var data = DBEntities1.Database.Connection.Query<User>(sql).ToList();
-                    //nje shembull me sql query
-
-
-
-
 
                 }
 
@@ -123,30 +108,14 @@ namespace CapstoneSubmissionSystem.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Index", "Login", new { area = "" });
             }
 
-
-
-
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
 
         [HttpPost]
-        public ActionResult AddUser(int uType, int admn, string fName, string lName, string password, string email, string uName, int pickedSupervisorID)
+        public ActionResult AddUser(int uType, int admn, string fName, string lName, string password, string email, string uName, int? pickedSupervisorID)
         {
             User addUser = new User();
 
@@ -160,10 +129,19 @@ namespace CapstoneSubmissionSystem.Controllers
             addUser.ISAdmin = (byte)admn;
             addUser.Password = password;
             addUser.Email = email;
-            addUser.SupervisorID = pickedSupervisorID;
 
-            var faculty = DBEntities1.Users.Where(u => u.UserID == pickedSupervisorID).FirstOrDefault().FacultyID;
-            addUser.FacultyID = faculty;
+            
+            if (pickedSupervisorID != -1)
+            {
+                addUser.SupervisorID = pickedSupervisorID;
+                //var faculty = DBEntities1.Users.Where(u => u.UserID == pickedSupervisorID).FirstOrDefault().FacultyID;
+                //addUser.SupervisorID = faculty;
+            }
+
+            else if(pickedSupervisorID == -1)
+            {
+                addUser.FacultyID = 1;
+            }
             DBEntities1.Users.Add(addUser);
             DBEntities1.SaveChanges();
 
@@ -171,7 +149,7 @@ namespace CapstoneSubmissionSystem.Controllers
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = int.MaxValue,
-                Data = "SUKSES"
+                Data = "Success"
             };
         }
 
@@ -197,7 +175,7 @@ namespace CapstoneSubmissionSystem.Controllers
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = int.MaxValue,
-                Data = "SUKSES"
+                Data = "Success"
             };
         }
 
@@ -221,7 +199,7 @@ namespace CapstoneSubmissionSystem.Controllers
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = int.MaxValue,
-                Data = "SUKSES"
+                Data = "Success"
             };
         }
         [HttpPost]
@@ -244,13 +222,9 @@ namespace CapstoneSubmissionSystem.Controllers
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = int.MaxValue,
-                Data = "SUKSES"
+                Data = "Success"
             };
         }
-
-
-
-
 
         public ActionResult DeleteUser(string userids)
         {
@@ -288,70 +262,6 @@ namespace CapstoneSubmissionSystem.Controllers
             }
         }
 
-        public ActionResult HideFileTypes(int doctypeID, int LoggedUserID)
-        {
-            var DocTypesToHide = DBEntities1.DocTypes.Where(f => f.TypeID == doctypeID /*per tu pare prape*/).ToList();
-            foreach (var dt in DocTypesToHide)
-            {
-                dt.Visible = 0;
-                DBEntities1.SaveChanges();
-            }
-
-            return Content("success");
-        }
-
-
-        //[HttpPost]
-        //public async Task<ActionResult> SubmitDok(string typeID, string docContent, string docName)
-        //{
-        //    //SKERDIII 21.10
-        //    //ketu do behet inserti ne db i dok
-
-        //    //KAP ID E USERIT TE LOGUAR PER TE LIDHUR DOK ME USERIN 
-        //    // TE DHENAT E TJERA TE VIJNE SI PARAMETER NGA AJAXI
-        //    //NQS TE DUHEN AKOMA ME SH TE DHENA SHTOJI TE AJO PJESA DATA: NE AJAX POR EMRI ATJE DUHET I NJEJTE ME PARAMETRIN KETU
-
-        //    //Fillimisht kerkon per kete user dhe per kete typeid nqs ka nje dok nuk ben insert por update ate qe eshte
-
-        //    //Nese nuk ka nje dok  me kete type id per kete user e ben insert
-
-        //    //NESE BEHET SHTIMI/UPDATE ME SUKSES KTHEN SUKSES
-        //    //NE TE KUNDERT BEN NJE RETURN TJETER FALSE OSE SI TE DUASH.
-
-
-
-        //    return new JsonResult
-        //    {
-        //        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-        //        MaxJsonLength = int.MaxValue,
-        //        Data = "SUKSES"
-        //    };
-        //}
-
-
-        [HttpPost]
-        public ActionResult UploadFile(HttpPostedFileBase file)
-        {
-            try
-            {
-                if (file.ContentLength > 0)
-                {
-                    string _FileName = Path.GetFileName(file.FileName);
-                    string _path = Path.Combine(Server.MapPath("~/FileRepo"), _FileName);
-                    file.SaveAs(_path);
-                }
-                ViewBag.Message = "File Uploaded Successfully.";
-                return View();
-            }
-            catch
-            {
-                ViewBag.Message = "File upload failed.";
-                return View();
-            }
-        }
-
-
-
         [HttpPost]
         public ActionResult Shto()
         {
@@ -374,7 +284,7 @@ namespace CapstoneSubmissionSystem.Controllers
                 }
                 else
                 {
-                    //The below code will create a folder if the folder is not exists in C#.Net.            
+                    //The below code will create a folder if the folder does not exist as prt of the solution.            
                     DirectoryInfo folder = Directory.CreateDirectory(Server.MapPath("~/FileRepo/" + userIDStr + "-" + typeID + ""));
                     _path = Path.Combine(Server.MapPath("~/FileRepo/" + userIDStr + "-" + typeID + ""), _FileName);
 
@@ -417,7 +327,7 @@ namespace CapstoneSubmissionSystem.Controllers
             {
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 MaxJsonLength = int.MaxValue,
-                Data = "SUKSES"
+                Data = "Success"
             };
 
         }
